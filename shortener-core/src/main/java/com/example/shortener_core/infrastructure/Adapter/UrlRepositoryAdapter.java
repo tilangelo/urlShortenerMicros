@@ -5,16 +5,19 @@ import com.example.shortener_core.domain.model.ShortUrl;
 import com.example.shortener_core.infrastructure.persistence.entity.UrlEntity;
 import com.example.shortener_core.infrastructure.persistence.mapper.UrlMapper;
 import com.example.shortener_core.infrastructure.persistence.repository.JpaUrlRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
 @Component
-@Transactional
 public class UrlRepositoryAdapter implements UrlRepositoryPort {
     private final JpaUrlRepository jpaUrlRepository;
     private final UrlMapper urlMapper;
+    private static final Logger log = LoggerFactory.getLogger(UrlRepositoryAdapter.class);
 
     public UrlRepositoryAdapter(JpaUrlRepository jpaUrlRepository, UrlMapper urlMapper) {
         this.jpaUrlRepository = jpaUrlRepository;
@@ -61,7 +64,16 @@ public class UrlRepositoryAdapter implements UrlRepositoryPort {
     }
 
     @Override
+    @Transactional // ДОБАВЛЕНО: Транзакция для операций записи
     public boolean deleteByShortCode(String shortCode) {
-        return jpaUrlRepository.deleteByShortCode(shortCode);
+        // ИЗМЕНЕНО: Сравниваем с > 0, так как метод возвращает int
+        return jpaUrlRepository.deleteByShortCode(shortCode) > 0;
+    }
+
+    @Scheduled(fixedRate = 24 * 60 * 60 * 1000) // Каждые 24 часа
+    @Transactional
+    public void cleanExpiredUrls() {
+        int deleted = jpaUrlRepository.deleteExpiredUrls();
+        log.info("Удалено {} устаревших URL", deleted);
     }
 }

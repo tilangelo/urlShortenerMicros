@@ -1,0 +1,49 @@
+version: "3.9"
+
+services:
+
+  postgres:
+    image: postgres:16
+    container_name: url-shortener-postgres
+    environment:
+      POSTGRES_DB: shortener
+      POSTGRES_USER: shortener
+      POSTGRES_PASSWORD: shortener
+    ports:
+      - "15432:5432"
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U shortener"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  redis:
+    image: redis:7
+    container_name: url-shortener-redis
+    ports:
+      - "6379:6379"
+    command: redis-server --appendonly yes
+    volumes:
+      - redis_data:/data
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./infra/prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana
+    ports:
+      - "3000:3000"
+    depends_on:
+      - prometheus
+
+volumes:
+  pg_data:
+  redis_data:

@@ -9,12 +9,12 @@ import lombok.Setter;
 @Setter
 public class RedirectResponse {
     private String shortCode;
-    private String LongUrl;
+    private String longUrl;
     private long ttl;
 
     public RedirectResponse(String shortCode, String longUrl, long ttl) {
         this.shortCode = shortCode;
-        this.LongUrl = longUrl;
+        this.longUrl = longUrl;
         this.ttl = ttl;
     }
 }

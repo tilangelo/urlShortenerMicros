@@ -9,3 +9,7 @@ spring:
 
   main:
     web-application-type: reactive
+
+logging:
+  level:
+    org.springframework.web.reactive.function.client.WebClient: DEBUG

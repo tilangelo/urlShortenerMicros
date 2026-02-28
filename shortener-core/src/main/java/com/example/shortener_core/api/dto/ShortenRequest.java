@@ -1,6 +1,8 @@
 package com.example.shortener_core.api.dto;
 
+import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -12,6 +14,7 @@ public class ShortenRequest {
     @Size(max = 2048, message = "URL is too long")
     private String longUrl;
 
-    @NotBlank(message = "Time of exp is required")
+    @NotNull
+    @Min(1)
     private Long ttl;
 }

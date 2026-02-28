@@ -4,6 +4,7 @@ import com.example.shortener_core.infrastructure.persistence.entity.UrlEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.Optional;
@@ -20,5 +21,11 @@ public interface JpaUrlRepository extends JpaRepository<UrlEntity, Long> {
     @Query("UPDATE UrlEntity u SET u.clickCount = u.clickCount + 1 WHERE u.shortCode = :shortCode")
     void incrementClickCount(String shortCode);
 
-    boolean deleteByShortCode(String shortCode);
+    @Modifying
+    @Query("DELETE FROM UrlEntity u WHERE u.shortCode = :shortCode")
+    int deleteByShortCode(@Param("shortCode") String shortCode);
+
+    @Modifying
+    @Query("DELETE FROM UrlEntity u WHERE u.expiresAt < CURRENT_TIMESTAMP")
+    int deleteExpiredUrls();
 }

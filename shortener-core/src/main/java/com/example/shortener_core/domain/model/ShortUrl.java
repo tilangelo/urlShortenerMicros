@@ -40,7 +40,7 @@ public class ShortUrl {
                 shortCode, // Генерируем short code из ID
                 longUrl,
                 Instant.now(),
-                Instant.now().plus(Duration.ofMinutes(ttl))
+                Instant.now().plus(Duration.ofMillis(ttl))
         );
     }
 

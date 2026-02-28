@@ -1,12 +1,16 @@
 package com.shortenerSoft.shortener_redirect.application.service;
 
 import com.shortenerSoft.shortener_redirect.api.dto.ShortenResponse;
+import com.shortenerSoft.shortener_redirect.application.exception.LinkExpiredException;
 import com.shortenerSoft.shortener_redirect.application.port.CacheCheckoutUseCase;
 import com.shortenerSoft.shortener_redirect.application.port.CachePort;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
+
+import static reactor.netty.http.HttpConnectionLiveness.log;
 
 @Service
 public class CacheCheckoutService implements CacheCheckoutUseCase {
@@ -25,6 +29,7 @@ public class CacheCheckoutService implements CacheCheckoutUseCase {
 
     @Override
     public Mono<String> checkout(String shortCode) {
+        System.out.println("Контроллер зашёл в checkout");
         return cachePort.get(shortCode)
                 .switchIfEmpty(
                         coreService.findLongUrlByShortCode(shortCode)
@@ -32,7 +37,20 @@ public class CacheCheckoutService implements CacheCheckoutUseCase {
                                 .doOnError(error ->
                                         log.error("Error fetching from core service for shortCode: {}", shortCode, error)
                                 )
-                                .onErrorResume(e -> Mono.empty())
+                                .onErrorResume(ex -> {
+                                    if (ex instanceof WebClientResponseException.Gone) {
+                                        log.warn("Код {} просрочен и удален в Core", shortCode);
+                                        return Mono.error(new LinkExpiredException("URL has expired"));
+
+                                    } else if (ex instanceof WebClientResponseException.NotFound) {
+                                        log.warn("Код {} не найден в Core", shortCode);
+                                        return Mono.empty();
+
+                                    } else {
+                                        log.error("Непредвиденная ошибка Core: {}", ex.getMessage());
+                                        return Mono.error(ex); // Пропагируем ошибку дальше
+                                    }
+                                })
                 );
     }
 
