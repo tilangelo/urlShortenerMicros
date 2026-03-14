@@ -22,16 +22,9 @@ public class RedisCacheAdapter implements CachePort {
         return redisTemplate.opsForValue().setIfAbsent(
                 buildKey(shortCode),
                 longUrl,
-                Duration.ofMinutes(ttl));
+                Duration.ofMillis(ttl));
     }
 
-    @Override
-    public boolean saveWithDefaultTtl(String shortCode, String longUrl) {
-        return redisTemplate.opsForValue().setIfAbsent(
-                buildKey(shortCode),
-                longUrl,
-                Duration.ofMinutes(30));
-    }
 
     @Override
     public Optional<String> get(String shortCode) {

@@ -40,30 +40,26 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
 
     @Override
     public ShortUrl createShortUrl(String longUrl, Long ttl) {
-            validateLongUrl(longUrl);
+        System.out.println("Создание нового shortUrl ///");
+        System.out.println("Валидация...");
 
-            // Генерация id с помощью абстракции(её реализует snowflacke класс)
-            Long genId = idGenerator.nextId();
-            ShortUrl shortUrl = createShortCodeAndUrl(genId, longUrl, ttl);
+        validateLongUrl(longUrl);
 
-            if(urlRepository.existsByShortCode(shortUrl.getShortCode())) {
-                throw new ValidationException("Этот ShortCode уже существует " + shortUrl.getShortCode());
-            }
+        // Генерация id с помощью абстракции(её реализует snowflacke класс)
+        Long genId = idGenerator.nextId();
+        ShortUrl shortUrl = createShortCodeAndUrl(genId, longUrl, ttl);
+
+        if(urlRepository.existsByShortCode(shortUrl.getShortCode())) {
+            throw new ValidationException("Этот ShortCode уже существует " + shortUrl.getShortCode());
+        }
 
 
-            // Сохранение в БД и КЕШ
-            urlRepository.save(shortUrl);
+        // Сохранение в БД и КЕШ
+        System.out.println("Сохранение...");
+        urlRepository.save(shortUrl);
+        cachePort.save(shortUrl.getShortCode(), longUrl, ttl);
 
-            // Если ttl больше 30 минут, то сохраняю в REDIS с дефолтным ttl - 30 минут
-            if(ttl > 1800000){
-                cachePort.saveWithDefaultTtl(shortUrl.getShortCode(), longUrl);
-
-                // Если меньше или равно 30 минут, то сохраняю в REDIS с этим временем
-            }else {
-                cachePort.save(shortUrl.getShortCode(), longUrl, ttl);
-            }
-
-            return shortUrl;
+        return shortUrl;
     }
 
 

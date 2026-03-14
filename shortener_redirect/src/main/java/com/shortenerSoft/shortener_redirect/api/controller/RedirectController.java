@@ -55,11 +55,6 @@ public class RedirectController {
                         log.error("Непредвиденная ошибка Core: {}", ex.getMessage());
                         return Mono.error(ex); // Пропагируем ошибку дальше
                     }
-                })
-                .switchIfEmpty(Mono.just(ResponseEntity
-                        .status(HttpStatus.NOT_FOUND)
-                        .header("X-URL-FOUND", "false")
-                        .<Void>build())) // Явное указание типа
-                ;
+                });
     }
 }

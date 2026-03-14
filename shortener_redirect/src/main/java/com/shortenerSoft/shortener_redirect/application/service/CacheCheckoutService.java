@@ -10,8 +10,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Mono;
 
-import static reactor.netty.http.HttpConnectionLiveness.log;
-
 @Service
 public class CacheCheckoutService implements CacheCheckoutUseCase {
 
@@ -19,41 +17,33 @@ public class CacheCheckoutService implements CacheCheckoutUseCase {
     private static final long THIRTY_MINUTES_IN_MILLIS = 30 * 60 * 1000;
     private static final Logger log = LoggerFactory.getLogger(CacheCheckoutService.class);
 
-    private final CachePort cachePort;
-    private final CoreService coreService;
+    private static final String REDIRECT_EMPTY_URI = "https://habr.com/ru/feed/";
 
-    public CacheCheckoutService(CachePort cachePort, CoreService coreService) {
+    private final CachePort cachePort;
+
+    public CacheCheckoutService(CachePort cachePort) {
         this.cachePort = cachePort;
-        this.coreService = coreService;
     }
 
     @Override
     public Mono<String> checkout(String shortCode) {
         System.out.println("Контроллер зашёл в checkout");
         return cachePort.get(shortCode)
-                .switchIfEmpty(
-                        coreService.findLongUrlByShortCode(shortCode)
-                                .flatMap(this::processUrlFromCore)
-                                .doOnError(error ->
-                                        log.error("Error fetching from core service for shortCode: {}", shortCode, error)
-                                )
-                                .onErrorResume(ex -> {
-                                    if (ex instanceof WebClientResponseException.Gone) {
-                                        log.warn("Код {} просрочен и удален в Core", shortCode);
-                                        return Mono.error(new LinkExpiredException("URL has expired"));
+                .log("CACHE CHECKOUT")
+                .defaultIfEmpty(REDIRECT_EMPTY_URI)
+                .onErrorResume(ex -> {
+            if (ex instanceof WebClientResponseException.Gone) {
+                log.warn("Код {} просрочен и удален в Core", shortCode);
+                return Mono.error(new LinkExpiredException("URL has expired"));
 
-                                    } else if (ex instanceof WebClientResponseException.NotFound) {
-                                        log.warn("Код {} не найден в Core", shortCode);
-                                        return Mono.empty();
-
-                                    } else {
-                                        log.error("Непредвиденная ошибка Core: {}", ex.getMessage());
-                                        return Mono.error(ex); // Пропагируем ошибку дальше
-                                    }
-                                })
-                );
+            } else {
+                log.error("Непредвиденная ошибка Core: {}", ex.getMessage());
+                return Mono.error(ex);
+            }
+        });
     }
 
+    @Deprecated
     private Mono<String> processUrlFromCore(ShortenResponse response) {
         if (response == null || response.getLongUrl() == null) {
             return Mono.empty();
