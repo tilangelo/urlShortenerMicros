@@ -6,8 +6,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 @SpringBootApplication
 public class ShortenerCoreApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(ShortenerCoreApplication.class, args);
-	}
+    public static void main(String[] args) {
+        SpringApplication.run(ShortenerCoreApplication.class, args);
+    }
 
 }

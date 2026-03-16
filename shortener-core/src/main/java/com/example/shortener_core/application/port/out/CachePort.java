@@ -1,11 +1,11 @@
 package com.example.shortener_core.application.port.out;
 
-import java.util.Optional;
+import com.example.shortener_core.domain.model.ShortUrlRedisSerializable;
 
 public interface CachePort {
-    boolean save(String shortCode, String longUrl, Long ttl);
+    boolean save(String shortCode, ShortUrlRedisSerializable shortUrlRedisSerializable);
 
-    Optional<String> get(String shortCode);
+    ShortUrlRedisSerializable get(String shortCode);
 
     boolean delete(String shortCode);
 

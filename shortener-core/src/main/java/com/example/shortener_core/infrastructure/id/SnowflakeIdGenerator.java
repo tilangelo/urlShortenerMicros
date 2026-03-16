@@ -1,7 +1,6 @@
 package com.example.shortener_core.infrastructure.id;
 
 import com.example.shortener_core.application.port.out.IdGenerator;
-import org.springframework.stereotype.Component;
 
 import java.time.Instant;
 

@@ -15,6 +15,7 @@ public class WebClientConfig {
 
     @Bean
     @Qualifier("coreWebClient")
+    @Deprecated
     public WebClient coreWebClient() {
         return WebClient.builder()
                 .baseUrl("http://localhost:8080") // замените на URL вашего core микросервиса

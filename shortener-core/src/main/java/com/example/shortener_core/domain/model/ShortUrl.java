@@ -5,19 +5,19 @@ import com.example.shortener_core.domain.valueobject.ShortCode;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.Serializable;
 import java.time.Duration;
 import java.time.Instant;
 
-public class ShortUrl {
-    // Getters
-    @Getter
+@Getter
+public class ShortUrl implements Serializable {
+
     private final Long id;
     private final ShortCode shortCode;
     private final LongUrl longUrl;
-    @Getter
     private final Instant createdAt;
-    @Getter
-    private Instant expiresAt;
+    private final Instant expiresAt;
+
     @Setter
     private Long clickCount;
 
@@ -60,7 +60,15 @@ public class ShortUrl {
         return expiresAt != null && Instant.now().isAfter(expiresAt);
     }
 
-    public String getShortCode() { return shortCode.getValue(); }
-    public String getLongUrl() { return longUrl.getValue(); }
-    public long getClickCount() { return clickCount; }
+    public String getShortCode() {
+        return shortCode.getValue();
+    }
+
+    public String getLongUrl() {
+        return longUrl.getValue();
+    }
+
+    public long getClickCount() {
+        return clickCount;
+    }
 }

@@ -7,18 +7,21 @@ import com.example.shortener_core.domain.model.ShortUrl;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
-@RequestMapping("/core-api/v1/")
+@RequestMapping("/core-api/")
 public class ShortenController {
 
     private final CreateShortUrlUseCase createShortUrlUseCase;
     private final String baseUrl;
 
     public ShortenController(CreateShortUrlUseCase createShortUrlUseCase,
-                             @Value("${app.base-url:http://localhost:8080}") String baseUrl) {
+                             @Value("${base.url:http://localhost:8080}") String baseUrl) {
         this.createShortUrlUseCase = createShortUrlUseCase;
         this.baseUrl = baseUrl;
     }

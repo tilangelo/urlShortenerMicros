@@ -2,10 +2,11 @@ package com.example.shortener_core.domain.valueobject;
 
 
 public class ShortCode {
+
     private final String value;
 
     private ShortCode(String value) {
-        if(value == null || value.trim().isEmpty()){
+        if (value == null || value.trim().isEmpty()) {
             throw new IllegalArgumentException("Short code cannot be empty");
         } else if (!value.matches("^[a-zA-Z0-9]+$")) {
             throw new IllegalArgumentException("short code should be alphanumeric");

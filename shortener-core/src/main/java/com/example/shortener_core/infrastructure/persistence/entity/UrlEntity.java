@@ -36,7 +36,8 @@ public class UrlEntity {
 
 
     // Конструкторы
-    public UrlEntity() {}
+    public UrlEntity() {
+    }
 
     public UrlEntity(Long id, String shortCode, String longUrl,
                      Instant createdAt, Instant expiresAt) {

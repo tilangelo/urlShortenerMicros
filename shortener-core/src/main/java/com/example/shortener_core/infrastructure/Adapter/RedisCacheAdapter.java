@@ -1,36 +1,50 @@
 package com.example.shortener_core.infrastructure.Adapter;
 
 import com.example.shortener_core.application.port.out.CachePort;
+import com.example.shortener_core.domain.model.ShortUrlRedisSerializable;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
-
-import java.time.Duration;
-import java.util.Optional;
+import tools.jackson.databind.json.JsonMapper;
 
 @Component
+@Slf4j
 public class RedisCacheAdapter implements CachePort {
     private final RedisTemplate<String, String> redisTemplate;
+    private final JsonMapper mapper;
 
-    public RedisCacheAdapter(RedisTemplate<String, String> redisTemplate) {
+    public RedisCacheAdapter(RedisTemplate<String, String> redisTemplate, JsonMapper mapper) {
         this.redisTemplate = redisTemplate;
+        this.mapper = mapper;
     }
 
 
-
     @Override
-    public boolean save(String shortCode, String longUrl, Long ttl) {
+    public boolean save(String shortCode, ShortUrlRedisSerializable serializable) {
+
+        log.info("Сохранение hash в redis...");
+
+        String json = mapper.writeValueAsString(serializable);
+
         return redisTemplate.opsForValue().setIfAbsent(
                 buildKey(shortCode),
-                longUrl,
-                Duration.ofMillis(ttl));
+                json
+        );
     }
 
 
     @Override
-    public Optional<String> get(String shortCode) {
-        return Optional.ofNullable(redisTemplate.opsForValue().get(
-                buildKey(shortCode))
-        );
+    public ShortUrlRedisSerializable get(String shortCode) {
+        log.debug("Получение данных из redis");
+
+        String value = redisTemplate.opsForValue().get(buildKey(shortCode));
+
+        if (value == null) {
+            return null;
+        }
+
+        return mapper.readValue(value, ShortUrlRedisSerializable.class);
+
     }
 
     @Override
