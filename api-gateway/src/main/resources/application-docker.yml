@@ -1,0 +1,10 @@
+spring:
+  data:
+    redis:
+      url: redis://redis:6379
+
+gateway:
+  core-service:
+    base-url: http://shortener-core:8080
+  redirect-service:
+    base-url: http://shortener-redirect:8081

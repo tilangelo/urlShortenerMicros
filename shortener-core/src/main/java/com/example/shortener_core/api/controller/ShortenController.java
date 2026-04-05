@@ -26,7 +26,7 @@ public class ShortenController {
         this.baseUrl = baseUrl;
     }
 
-    @PostMapping("/shorten")
+        @PostMapping("/shorten")
     public ResponseEntity<ShortenResponse> shorten(@Valid @RequestBody ShortenRequest request) {
         ShortUrl shortUrl = createShortUrlUseCase.createShortUrl(request.getLongUrl(), request.getTtl());
 

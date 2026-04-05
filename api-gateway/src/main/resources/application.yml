@@ -1,0 +1,68 @@
+server:
+  port: 8082
+
+spring:
+  application:
+    name: api-gateway
+  
+  cloud:
+    gateway:
+      routes:
+        - id: redirect_route
+          uri: http://shortener-redirect:8081
+          predicates:
+            - Path=/{shortcode}
+        - id: core_api_route
+          uri: http://shortener-core:8080
+          predicates:
+            - Path=/core-api/**
+          filters:
+            - StripPrefix=1
+        - id: internal_api_route
+          uri: http://shortener-core:8080
+          predicates:
+            - Path=/internal/**
+          filters:
+            - StripPrefix=1
+
+  data:
+    redis:
+      url: redis://redis:6379
+      timeout: 2000ms
+      lettuce:
+        pool:
+          enabled: true
+          max-active: 8
+          max-idle: 8
+          min-idle: 0
+          max-wait: 2000ms
+
+  webflux:
+    base-path: /
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+  metrics:
+    export:
+      prometheus:
+
+logging:
+  level:
+    com.example.api_gateway: DEBUG
+    org.springframework.cloud.gateway: DEBUG
+    reactor.netty: INFO
+
+# Custom properties
+gateway:
+  core-service:
+    base-url: http://shortener-core:8080
+  redirect-service:
+    base-url: http://shortener-redirect:8081
+  cache:
+    policy-ttl-hours: 24

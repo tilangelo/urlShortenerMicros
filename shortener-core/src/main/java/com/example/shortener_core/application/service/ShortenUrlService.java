@@ -50,7 +50,7 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
         }
 
 
-        // Сохранение в БД и КЕШ
+        // Сохранение в pg & redis
         log.debug("Сохранение в бд");
         urlRepository.save(shortUrl);
 

@@ -14,12 +14,10 @@ services:
     volumes:
       - pg_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${DB_USERNAME} -d ${DB_NAME}"]
+      test: ["CMD-SHELL", "pg_isready -U ${DB_NAME}"]
       interval: 10s
       timeout: 5s
       retries: 5
-    networks:
-      - shortener-net 
 
   redis:
     image: redis:7
@@ -29,8 +27,6 @@ services:
     command: redis-server --appendonly yes
     volumes:
       - redis_data:/data
-    networks:
-      - shortener-net  
 
   shortener-core:
     build: ./shortener-core
@@ -44,8 +40,6 @@ services:
       - .env
     ports:
       - "8080:8080"
-    networks:
-      - shortener-net  
 
   shortener-redirect:
     build: ./shortener_redirect
@@ -56,8 +50,6 @@ services:
       - .env
     ports:
       - "8081:8081"
-    networks:
-      - shortener-net  
 
   api-gateway:
     build: ./api-gateway
@@ -70,12 +62,6 @@ services:
       - .env
     ports:
       - "8082:8082"
-    networks:
-      - shortener-net  
-
-networks:
-  shortener-net:
-    driver: bridge
 
 volumes:
   pg_data:
