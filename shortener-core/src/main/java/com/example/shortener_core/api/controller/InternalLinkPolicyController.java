@@ -17,9 +17,9 @@ public class InternalLinkPolicyController {
     
     @GetMapping("/{shortcode}/policy")
     public ResponseEntity<LinkPolicyResponse> getLinkPolicy(@PathVariable String shortcode) {
-        log.debug("Getting policy for shortcode: {}", shortcode);
+        log.debug("Получение политики для shortcode: {} (fallback от gateway)", shortcode);
         
-        return linkPolicyService.getPolicyFromCacheOrDb(shortcode)
+        return linkPolicyService.getPolicyFromDb(shortcode)
                 .map(LinkPolicyResponse::fromRedis)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());

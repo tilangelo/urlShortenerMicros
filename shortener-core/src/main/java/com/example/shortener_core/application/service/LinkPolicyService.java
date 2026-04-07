@@ -52,7 +52,7 @@ public class LinkPolicyService implements LinkPolicyManagementUseCase {
         
         LinkPolicy saved = repository.save(linkPolicy);
         
-        // Sync to Redis
+        // Сохранение в Redis
         LinkPolicyRedis redisPolicy = LinkPolicyRedis.fromDomain(saved);
         cache.savePolicy(shortcode, redisPolicy);
         
@@ -77,7 +77,7 @@ public class LinkPolicyService implements LinkPolicyManagementUseCase {
     public LinkPolicy updatePolicy(LinkPolicy linkPolicy) {
         LinkPolicy updated = repository.save(linkPolicy);
         
-        // Update Redis
+        // Обновление Redis
         LinkPolicyRedis redisPolicy = LinkPolicyRedis.fromDomain(updated);
         cache.savePolicy(linkPolicy.getShortcodeValue(), redisPolicy);
         
@@ -100,19 +100,14 @@ public class LinkPolicyService implements LinkPolicyManagementUseCase {
         return repository.existsByShortcode(shortcode);
     }
     
-    // Additional method for gateway fallback
+    // Метод для fallback из gateway если тот не нашёл запись в redis(или не смог прочитать)
     @Transactional(readOnly = true)
-    public Optional<LinkPolicyRedis> getPolicyFromCacheOrDb(String shortcode) {
-        // Try cache first
-        Optional<LinkPolicyRedis> cached = cache.getPolicy(shortcode);
-        if (cached.isPresent()) {
-            return cached;
-        }
-        
-        // Fallback to database
+    public Optional<LinkPolicyRedis> getPolicyFromDb(String shortcode) {
+        // проверка в БД, если запись есть - сохраняет в redis и возвращает значение
         Optional<LinkPolicy> fromDb = repository.findByShortcode(shortcode);
         if (fromDb.isPresent()) {
             LinkPolicyRedis redisPolicy = LinkPolicyRedis.fromDomain(fromDb.get());
+            // обновление кеша
             cache.savePolicy(shortcode, redisPolicy);
             return Optional.of(redisPolicy);
         }

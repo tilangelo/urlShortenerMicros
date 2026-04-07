@@ -16,8 +16,10 @@ public class GatewayConfig {
     
     @Bean
     public JsonMapper jsonMapper() {
-        return JsonMapper.builder()
+        JsonMapper mapper = JsonMapper.builder()
                 .addModule(new JavaTimeModule())
                 .build();
+        mapper.setPropertyNamingStrategy(com.fasterxml.jackson.databind.PropertyNamingStrategies.SNAKE_CASE);
+        return mapper;
     }
 }

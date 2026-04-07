@@ -7,12 +7,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
 public class AuthValidationService {
     
     private final WebClient.Builder webClientBuilder;
+    private static final Duration AUTH_TIMEOUT = Duration.ofSeconds(3);
+    private static final Duration SSO_TIMEOUT = Duration.ofSeconds(5);
     
     public Mono<Boolean> validateAuth(String authType, LinkPolicy.AuthConfig authConfig, 
                                      String authHeader, String clientIp) {
@@ -47,16 +51,34 @@ public class AuthValidationService {
             return Mono.just(false);
         }
         
-        return webClientBuilder.build()
+        WebClient webClient = webClientBuilder
+                .clone()
+                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(1024 * 1024)) // 1MB
+                .build();
+        
+        return webClient
                 .post()
                 .uri(config.getSso_endpoint())
                 .header("Authorization", "Bearer " + token)
                 .header("X-Client-IP", getClientIp())
                 .retrieve()
+                .onStatus(
+                    status -> status.is4xxClientError() || status.is5xxServerError(),
+                    response -> response.bodyToMono(String.class)
+                            .defaultIfEmpty("SSO validation failed")
+                            .map(body -> new RuntimeException("SSO error: " + response.statusCode() + " - " + body))
+                )
                 .bodyToMono(Boolean.class)
                 .defaultIfEmpty(false)
+                .timeout(SSO_TIMEOUT)
                 .doOnSuccess(valid -> log.debug("SSO validation result: {}", valid))
-                .doOnError(error -> log.error("SSO validation failed", error))
+                .doOnError(error -> {
+                    if (error instanceof java.util.concurrent.TimeoutException) {
+                        log.warn("SSO validation timeout for token: {}", token.substring(0, Math.min(10, token.length())));
+                    } else {
+                        log.error("SSO validation failed", error);
+                    }
+                })
                 .onErrorReturn(false);
     }
     

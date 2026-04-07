@@ -34,7 +34,7 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
 
     @Override
     public ShortUrl createShortUrl(String longUrl, Long ttl) {
-        log.info("Создарие url для {}", longUrl);
+        log.info("Создание короткой ссылки для {}", longUrl);
 
         validateLongUrl(longUrl);
 
@@ -45,16 +45,16 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
         ShortUrl shortUrl = createShortCodeAndUrl(genId, longUrl, ttl);
 
         if (urlRepository.existsByShortCode(shortUrl.getShortCode())) {
-            log.error("Коллизия шорткода");
+            log.error("Обнаружена коллизия шорткода");
             throw new ValidationException("Этот ShortCode уже существует " + shortUrl.getShortCode());
         }
 
 
-        // Сохранение в pg & redis
-        log.debug("Сохранение в бд");
+        // Сохранение в pg и Redis
+        log.debug("Сохранение в базу данных");
         urlRepository.save(shortUrl);
 
-        // сохраняет в виде - url:SHORTCODE : longUrl, expiredAt, createdAt
+        // Сохранение в Redis в формате: url:SHORTCODE -> {longUrl, expiredAt, createdAt}
         ShortUrlRedisSerializable serializable = new ShortUrlRedisSerializable(
                 longUrl,
                 shortUrl.getCreatedAt(),
@@ -62,7 +62,7 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
         );
         cachePort.save(shortUrl.getShortCode(), serializable);
 
-        log.info("Успешно сохранено");
+        log.info("короткая ссылка успешно сохранена");
 
         return shortUrl;
     }
@@ -71,7 +71,7 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
     // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
 
 
-    //СОздание короткого URL
+    // Создание объекта короткой ссылки
     private ShortUrl createShortCodeAndUrl(Long id, String longUrl, Long ttl) {
         log.debug("Создание шорткода...");
         // Создание shortCode(Часть shortUrl) с помощью Base62(id -> цифроБуквенный код)
@@ -87,14 +87,14 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
         );
     }
 
-    //Валидация строки URL на разумные размеры
+    // Валидация URL на корректность и допустимую длину
     private void validateLongUrl(String url) {
         if (url == null || url.trim().isEmpty()) {
-            log.error("Пустой url");
+            log.error("Пустой URL передан");
             throw new ValidationException("URL cannot be empty");
         }
         if (url.length() > 2048) {
-            log.error("сликшом длинный url");
+            log.error("URL превышает максимальную длину");
             throw new ValidationException("URL is too long");
         }
     }

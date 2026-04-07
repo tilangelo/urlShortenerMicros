@@ -7,19 +7,42 @@ spring:
   
   cloud:
     gateway:
+      httpclient:
+        connect-timeout: 5000
+        response-timeout: 10s
+        pool:
+          type: ELASTIC
+          max-connections: 500
+          acquire-timeout: 5000        # 5 сек на получение соединения
+          max-idle-time: 30s          # Закрывать неактивные соединения
+          max-life-time: 60s           # Максимальное время жизни соединения
+      
       routes:
-        - id: redirect_route
-          uri: http://shortener-redirect:8081
+        - id: direct_redirect_route
+          uri: http://localhost:8081
           predicates:
             - Path=/{shortcode}
+          filters:
+            - SetPath=/redirect-api/{shortcode}
+            - name: Retry
+              args:
+                retries: 2
+                statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+                methods: GET,POST
+                backoff:
+                  firstBackoff: 100ms
+                  maxBackoff: 500ms
+                  factor: 2
+        - id: redirect_route
+          uri: http://localhost:8081
+          predicates:
+            - Path=/redirect-api/{shortcode}
         - id: core_api_route
-          uri: http://shortener-core:8080
+          uri: http://localhost:8080/
           predicates:
             - Path=/core-api/**
-          filters:
-            - StripPrefix=1
         - id: internal_api_route
-          uri: http://shortener-core:8080
+          uri: http://localhost:8080
           predicates:
             - Path=/internal/**
           filters:
@@ -27,15 +50,16 @@ spring:
 
   data:
     redis:
-      url: redis://redis:6379
+      url: redis://localhost:6379
       timeout: 2000ms
       lettuce:
         pool:
           enabled: true
-          max-active: 8
+          max-active: 10
           max-idle: 8
-          min-idle: 0
+          min-idle: 2
           max-wait: 2000ms
+        shutdown-timeout: 100ms
 
   webflux:
     base-path: /
@@ -54,15 +78,23 @@ management:
 
 logging:
   level:
-    com.example.api_gateway: DEBUG
-    org.springframework.cloud.gateway: DEBUG
-    reactor.netty: INFO
+    com.example.api_gateway: debug
+    org.springframework.cloud.gateway: debug
+    reactor.netty: ERROR
+    org.springframework.web.reactive: WARN
+  pattern:
+    console: "%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n"
+  file:
+    name: logs/api-gateway.log
+  logback:
+    rollingpolicy:
+      max-file-size: 100MB
+      max-history: 30
 
-# Custom properties
 gateway:
   core-service:
-    base-url: http://shortener-core:8080
+    base-url: http://localhost:8080
   redirect-service:
-    base-url: http://shortener-redirect:8081
+    base-url: http://localhost:8081
   cache:
     policy-ttl-hours: 24

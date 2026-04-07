@@ -11,10 +11,10 @@ import java.util.List;
 @Data
 public class CreateLinkPolicyRequest {
     
-    @NotNull(message = "Link ID is required")
+    @NotNull(message = "ID ссылки обязателен")
     private Long linkId;
     
-    @NotBlank(message = "Shortcode is required")
+    @NotBlank(message = "Шорткод обязателен")
     private String shortcode;
     
     private List<String> allowedIps;

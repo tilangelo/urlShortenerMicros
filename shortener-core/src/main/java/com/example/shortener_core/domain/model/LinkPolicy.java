@@ -53,7 +53,7 @@ public class LinkPolicy {
     
     public boolean isTimeWindowValid(Instant now) {
         if (allowedTimeStart == null && allowedTimeEnd == null) {
-            return true; // No time restrictions
+            return true; // Нет временных ограничений
         }
         
         boolean afterStart = allowedTimeStart == null || !now.isBefore(allowedTimeStart);
@@ -86,7 +86,7 @@ public class LinkPolicy {
                     return type;
                 }
             }
-            throw new IllegalArgumentException("Unknown auth type: " + value);
+            throw new IllegalArgumentException("Неизвестный тип аутентификации: " + value);
         }
     }
 }

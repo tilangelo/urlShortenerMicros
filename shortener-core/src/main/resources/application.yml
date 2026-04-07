@@ -5,9 +5,9 @@ spring:
   application:
     name: url-shortener
   datasource:
-    url: ${DB_URL}
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    url: jdbc:postgresql://localhost:15432/shortener
+    username: angelo
+    password: shortener-password-testing
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -27,7 +27,11 @@ spring:
           time_zone: UTC
   data:
     redis:
-      host: ${REDIS_HOST}
-      port: ${REDIS_PORT}
+      host: localhost
+      port: 6379
   cache:
     type: redis
+
+logging:
+  level:
+    web: trace

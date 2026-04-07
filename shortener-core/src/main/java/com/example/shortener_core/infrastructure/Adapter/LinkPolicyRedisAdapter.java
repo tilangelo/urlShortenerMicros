@@ -23,6 +23,11 @@ public class LinkPolicyRedisAdapter implements LinkPolicyCachePort {
             .addModule(new JavaTimeModule())
             .build();
     
+    static {
+        // настройка mapper для использования snake_case стратегии
+        jsonMapper.setPropertyNamingStrategy(com.fasterxml.jackson.databind.PropertyNamingStrategies.SNAKE_CASE);
+    }
+    
     private static final String POLICY_KEY_PREFIX = "link:policy:";
     private static final long DEFAULT_TTL_HOURS = 24;
     
@@ -32,8 +37,9 @@ public class LinkPolicyRedisAdapter implements LinkPolicyCachePort {
             String key = buildKey(shortcode);
             String json = jsonMapper.writeValueAsString(policy);
             
+            log.debug("Сохранение политики в Redis для shortcode {}: {}", shortcode, json);
             redisTemplate.opsForValue().set(key, json, DEFAULT_TTL_HOURS, TimeUnit.HOURS);
-            log.debug("Saved link policy to Redis for shortcode: {}", shortcode);
+            log.debug("Политика успешно сохранена в Redis для shortcode: {}", shortcode);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize link policy for shortcode: {}", shortcode, e);
             throw new RuntimeException("Failed to serialize link policy", e);
@@ -47,15 +53,23 @@ public class LinkPolicyRedisAdapter implements LinkPolicyCachePort {
             String json = redisTemplate.opsForValue().get(key);
             
             if (json == null) {
-                log.debug("No policy found in Redis for shortcode: {}", shortcode);
+                log.debug("Политика не найдена в Redis для shortcode: {}", shortcode);
                 return Optional.empty();
             }
             
+            log.debug("Получен JSON из Redis для shortcode {}: {}", shortcode, json);
             LinkPolicyRedis policy = jsonMapper.readValue(json, LinkPolicyRedis.class);
-            log.debug("Retrieved link policy from Redis for shortcode: {}", shortcode);
+            log.debug("Политика успешно десериализована для shortcode: {}", shortcode);
             return Optional.of(policy);
         } catch (JsonProcessingException e) {
-            log.error("Failed to deserialize link policy for shortcode: {}", shortcode, e);
+            log.error("Ошибка десериализации политики для shortcode: {}. Ошибка: {}", shortcode, e.getMessage(), e);
+            // Дополнительно логируем сырые данные для отладки
+            String key = buildKey(shortcode);
+            String rawJson = redisTemplate.opsForValue().get(key);
+            log.error("raw JSON, которые не удалось десериализовать: {}", rawJson);
+            return Optional.empty();
+        } catch (Exception e) {
+            log.error("Неожиданная ошибка при получении политики для shortcode: {}", shortcode, e);
             return Optional.empty();
         }
     }
@@ -64,7 +78,7 @@ public class LinkPolicyRedisAdapter implements LinkPolicyCachePort {
     public void deletePolicy(String shortcode) {
         String key = buildKey(shortcode);
         redisTemplate.delete(key);
-        log.debug("Deleted link policy from Redis for shortcode: {}", shortcode);
+        log.debug("Политика удалена из Redis для shortcode: {}", shortcode);
     }
     
     @Override

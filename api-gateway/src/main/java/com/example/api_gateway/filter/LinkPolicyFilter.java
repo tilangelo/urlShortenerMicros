@@ -3,6 +3,8 @@ package com.example.api_gateway.filter;
 import com.example.api_gateway.model.LinkPolicy;
 import com.example.api_gateway.service.AuthValidationService;
 import com.example.api_gateway.service.LinkPolicyService;
+import io.github.resilience4j.circuitbreaker.CircuitBreaker;
+import io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator;
 import io.micrometer.core.instrument.Counter;
 import io.micrometer.core.instrument.Metrics;
 import io.micrometer.core.instrument.Timer;
@@ -28,12 +30,15 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
     
     private final LinkPolicyService linkPolicyService;
     private final AuthValidationService authValidationService;
+    private final CircuitBreaker circuitBreaker;
     
     // Metrics
     private final Counter accessDeniedTotal = Metrics.counter("access_denied_total");
     private final Counter clicksTotal = Metrics.counter("clicks_total");
     private final Counter redirectSuccessTotal = Metrics.counter("redirect_success_total");
+    private final Counter circuitBreakerOpenTotal = Metrics.counter("circuit_breaker_open_total");
     private final Timer requestLatency = Metrics.timer("request_latency_seconds");
+    private static final Duration FILTER_TIMEOUT = Duration.ofSeconds(8);
     
     @Override
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
@@ -43,6 +48,14 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
         
         // Извлекаем shortcode из пути
         String path = request.getPath().value();
+        
+        // Пропускаем API запросы
+        if (path.startsWith("/core-api/") || path.startsWith("/redirect-api/") || 
+            path.startsWith("/internal/") || path.equals("/core-api") || 
+            path.equals("/redirect-api") || path.equals("/internal")) {
+            return chain.filter(exchange);
+        }
+        
         String shortcode = extractShortcode(path);
         
         if (shortcode == null || shortcode.isEmpty()) {
@@ -51,15 +64,46 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
         
         log.debug("Processing request for shortcode: {}", shortcode);
         
-        return linkPolicyService.getPolicy(shortcode)
-                .flatMap(policy -> validateAndProcess(policy, exchange, chain, startTime))
-                .switchIfEmpty(
-                    // Политика не найдена, разрешаем доступ
-                    Mono.defer(() -> {
-                        clicksTotal.increment();
-                        return chain.filter(exchange);
-                    })
-                );
+        // Проверяем существование ссылки в Redis (без fallback в core)
+        return linkPolicyService.shortcodeExistsInRedis(shortcode)
+                .flatMap(exists -> {
+                    if (!exists) {
+                        log.warn("Shortcode {} not found in Redis, returning 404", shortcode);
+                        return sendErrorResponse(exchange.getResponse(), HttpStatus.NOT_FOUND, "Short link not found");
+                    }
+                    
+                    // Ссылка существует, продолжаем с проверкой политики
+                    return linkPolicyService.getPolicy(shortcode)
+                            .transform(io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator.of(circuitBreaker))
+                            .timeout(FILTER_TIMEOUT)
+                            .flatMap(policy -> validateAndProcess(policy, exchange, chain, startTime))
+                            .switchIfEmpty(
+                                // Политика не найдена, разрешаем доступ
+                                Mono.defer(() -> {
+                                    log.info("Политика не найдена, доступ разрешен");
+                                    clicksTotal.increment();
+                                    return chain.filter(exchange);
+                                })
+                            );
+                })
+                .doOnError(error -> {
+                    if (error instanceof io.github.resilience4j.circuitbreaker.CallNotPermittedException) {
+                        circuitBreakerOpenTotal.increment();
+                        log.warn("Circuit breaker is OPEN for shortcode: {}", shortcode);
+                        sendErrorResponse(exchange.getResponse(), HttpStatus.SERVICE_UNAVAILABLE, "Service temporarily unavailable");
+                    } else if (error instanceof java.util.concurrent.TimeoutException) {
+                        log.warn("Request timeout for shortcode: {}", shortcode);
+                        sendErrorResponse(exchange.getResponse(), HttpStatus.GATEWAY_TIMEOUT, "Request timeout");
+                    }
+                })
+                .onErrorResume(error -> {
+                    if (error instanceof io.github.resilience4j.circuitbreaker.CallNotPermittedException) {
+                        return sendErrorResponse(exchange.getResponse(), HttpStatus.SERVICE_UNAVAILABLE, "Service temporarily unavailable");
+                    } else if (error instanceof java.util.concurrent.TimeoutException) {
+                        return sendErrorResponse(exchange.getResponse(), HttpStatus.GATEWAY_TIMEOUT, "Request timeout");
+                    }
+                    return Mono.error(error);
+                });
     }
     
     private Mono<Void> validateAndProcess(LinkPolicy policy, ServerWebExchange exchange, 
@@ -123,17 +167,34 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
         // Пытаемся получить реальный ip из заголовков
         String xForwardedFor = request.getHeaders().getFirst("X-Forwarded-For");
         if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
-            return xForwardedFor.split(",")[0].trim();
+            String ip = xForwardedFor.split(",")[0].trim();
+            return normalizeLocalhost(ip);
         }
         
         String xRealIp = request.getHeaders().getFirst("X-Real-IP");
         if (xRealIp != null && !xRealIp.isEmpty()) {
-            return xRealIp;
+            return normalizeLocalhost(xRealIp);
         }
         
         // Резервный вариант: удалённый адрес
-        return request.getRemoteAddress() != null ? 
-                request.getRemoteAddress().getAddress().getHostAddress() : "unknown";
+        if (request.getRemoteAddress() != null) {
+            String ip = request.getRemoteAddress().getAddress().getHostAddress();
+            return normalizeLocalhost(ip);
+        }
+        
+        return "unknown";
+    }
+    
+    private String normalizeLocalhost(String ip) {
+        // Преобразуем IPv6 localhost в IPv4
+        if (ip.equals("0:0:0:0:0:0:0:1") || ip.equals("::1")) {
+            return "127.0.0.1";
+        }
+        // Преобразуем IPv6 mapped IPv4
+        if (ip.startsWith("::ffff:")) {
+            return ip.substring(7);
+        }
+        return ip;
     }
     
     private Mono<Void> sendErrorResponse(ServerHttpResponse response, HttpStatus status, String message) {
@@ -149,6 +210,6 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
     
     @Override
     public int getOrder() {
-        return -10; // run early в цепочке фильтров
+        return -100; // более высокий приоритет, чем роуты
     }
 }

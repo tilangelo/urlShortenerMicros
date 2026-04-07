@@ -10,8 +10,8 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class ShortenRequest {
-    @NotBlank(message = "URL is required")
-    @Size(max = 2048, message = "URL is too long")
+    @NotBlank(message = "URL обязателен")
+    @Size(max = 2048, message = "URL слишком длинный")
     private String longUrl;
 
     @NotNull

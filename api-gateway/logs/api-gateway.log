@@ -1,0 +1,315 @@
+2026-04-07T18:31:08.492+10:00  INFO 18332 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Starting ApiGatewayApplication using Java 21.0.8 with PID 18332 (C:\Users\angelo\Desktop\urlShortenerMicros\api-gateway\target\classes started by angelo in C:\Users\angelo\Desktop\urlShortenerMicros\api-gateway)
+2026-04-07T18:31:08.496+10:00  INFO 18332 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-04-07T18:31:11.175+10:00  INFO 18332 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-04-07T18:31:11.181+10:00  INFO 18332 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-04-07T18:31:11.249+10:00  INFO 18332 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 31 ms. Found 0 Redis repository interfaces.
+2026-04-07T18:31:11.913+10:00  INFO 18332 --- [api-gateway] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=01938e6b-f039-380b-8df2-870e16ae7572
+2026-04-07T18:31:14.813+10:00  INFO 18332 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:31:15.025+10:00  WARN 18332 --- [api-gateway] [main] onfigReactiveWebServerApplicationContext : Exception encountered during context initialization - cancelling refresh attempt: org.springframework.beans.factory.UnsatisfiedDependencyException: Error creating bean with name 'httpClientSslConfigurer' defined in class path resource [org/springframework/cloud/gateway/config/GatewayAutoConfiguration$NettyConfiguration.class]: Unsatisfied dependency expressed through method 'httpClientSslConfigurer' parameter 1: Error creating bean with name 'httpClientProperties': Could not bind properties to 'HttpClientProperties' : prefix=spring.cloud.gateway.httpclient, ignoreInvalidFields=false, ignoreUnknownFields=true
+2026-04-07T18:31:15.118+10:00  INFO 18332 --- [api-gateway] [main] .s.b.a.l.ConditionEvaluationReportLogger : 
+
+Error starting ApplicationContext. To display the condition evaluation report re-run your application with 'debug' enabled.
+2026-04-07T18:31:15.175+10:00 ERROR 18332 --- [api-gateway] [main] o.s.b.d.LoggingFailureAnalysisReporter   : 
+
+***************************
+APPLICATION FAILED TO START
+***************************
+
+Description:
+
+Failed to bind properties under 'spring.cloud.gateway.httpclient.pool.acquire-timeout' to java.lang.Long:
+
+    Property: spring.cloud.gateway.httpclient.pool.acquire-timeout
+    Value: "5000ms"
+    Origin: class path resource [application.yml] - 16:28
+    Reason: failed to convert java.lang.String to java.lang.Long (caused by java.lang.NumberFormatException: For input string: "5000ms")
+
+Action:
+
+Update your application's configuration
+
+2026-04-07T18:36:33.446+10:00  INFO 13192 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Starting ApiGatewayApplication using Java 21.0.8 with PID 13192 (C:\Users\angelo\Desktop\urlShortenerMicros\api-gateway\target\classes started by angelo in C:\Users\angelo\Desktop\urlShortenerMicros\api-gateway)
+2026-04-07T18:36:33.451+10:00  INFO 13192 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-04-07T18:36:35.405+10:00  INFO 13192 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-04-07T18:36:35.412+10:00  INFO 13192 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-04-07T18:36:35.475+10:00  INFO 13192 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 27 ms. Found 0 Redis repository interfaces.
+2026-04-07T18:36:35.986+10:00  INFO 13192 --- [api-gateway] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=01938e6b-f039-380b-8df2-870e16ae7572
+2026-04-07T18:36:38.670+10:00  INFO 13192 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:36:40.706+10:00  INFO 13192 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:36:41.009+10:00  INFO 13192 --- [api-gateway] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2026-04-07T18:36:41.719+10:00  INFO 13192 --- [api-gateway] [main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8082
+2026-04-07T18:36:42.747+10:00  INFO 13192 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:36:43.774+10:00  INFO 13192 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:36:43.930+10:00  INFO 13192 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Started ApiGatewayApplication in 12.462 seconds (process running for 13.85)
+2026-04-07T18:37:55.383+10:00 ERROR 13192 --- [api-gateway] [reactor-http-nio-4] c.e.a.service.LinkPolicyService          : Failed to fetch policy from core service for shortcode: M9CVv3iwAy
+
+java.lang.RuntimeException: Core service error: 404 NOT_FOUND - Unknown error
+	at com.example.api_gateway.service.LinkPolicyService.lambda$fetchPolicyFromCore$5(LinkPolicyService.java:83) ~[classes/:na]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 404 NOT_FOUND from GET http://localhost:8080/internal/links/M9CVv3iwAy/policy [DefaultWebClient]
+Original Stack Trace:
+		at com.example.api_gateway.service.LinkPolicyService.lambda$fetchPolicyFromCore$5(LinkPolicyService.java:83) ~[classes/:na]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2097) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onComplete(FluxDefaultIfEmpty.java:134) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onComplete(FluxMapFuseable.java:152) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onComplete(FluxContextWrite.java:126) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onComplete(FluxMapFuseable.java:350) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onComplete(FluxFilterFuseable.java:391) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2098) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:145) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:260) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:415) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:446) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:500) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:768) ~[reactor-netty-http-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:114) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:436) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:251) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-04-07T18:37:55.407+10:00  INFO 13192 --- [api-gateway] [reactor-http-nio-4] c.e.api_gateway.filter.LinkPolicyFilter  : Политика не найдена, доступ разрешен
+2026-04-07T18:38:05.957+10:00 ERROR 13192 --- [api-gateway] [reactor-http-nio-4] c.e.a.service.LinkPolicyService          : Failed to fetch policy from core service for shortcode: M9CVv3iwAy
+
+java.lang.RuntimeException: Core service error: 404 NOT_FOUND - Unknown error
+	at com.example.api_gateway.service.LinkPolicyService.lambda$fetchPolicyFromCore$5(LinkPolicyService.java:83) ~[classes/:na]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 404 NOT_FOUND from GET http://localhost:8080/internal/links/M9CVv3iwAy/policy [DefaultWebClient]
+Original Stack Trace:
+		at com.example.api_gateway.service.LinkPolicyService.lambda$fetchPolicyFromCore$5(LinkPolicyService.java:83) ~[classes/:na]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2097) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onComplete(FluxDefaultIfEmpty.java:134) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onComplete(FluxMapFuseable.java:152) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onComplete(FluxContextWrite.java:126) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onComplete(FluxMapFuseable.java:350) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onComplete(FluxFilterFuseable.java:391) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2098) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:145) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:260) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:415) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:446) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:500) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:768) ~[reactor-netty-http-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:114) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:436) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:251) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-04-07T18:38:05.964+10:00  INFO 13192 --- [api-gateway] [reactor-http-nio-4] c.e.api_gateway.filter.LinkPolicyFilter  : Политика не найдена, доступ разрешен
+2026-04-07T18:40:34.223+10:00  WARN 13192 --- [api-gateway] [lettuce-nioEventLoop-5-1] c.e.api_gateway.filter.LinkPolicyFilter  : Time window validation failed for client IP: 127.0.0.1
+2026-04-07T18:40:34.232+10:00  INFO 13192 --- [api-gateway] [reactor-http-nio-6] c.e.api_gateway.filter.LinkPolicyFilter  : Политика не найдена, доступ разрешен
+2026-04-07T18:41:37.596+10:00  INFO 13192 --- [api-gateway] [reactor-http-nio-6] c.e.api_gateway.filter.LinkPolicyFilter  : Политика не найдена, доступ разрешен
+2026-04-07T18:44:53.000+10:00 ERROR 13192 --- [api-gateway] [reactor-http-nio-10] c.e.a.service.LinkPolicyService          : Failed to fetch policy from core service for shortcode: M9D0EcduHQ
+
+java.lang.RuntimeException: Core service error: 404 NOT_FOUND - Unknown error
+	at com.example.api_gateway.service.LinkPolicyService.lambda$fetchPolicyFromCore$5(LinkPolicyService.java:83) ~[classes/:na]
+	Suppressed: reactor.core.publisher.FluxOnAssembly$OnAssemblyException: 
+Error has been observed at the following site(s):
+	*__checkpoint ⇢ 404 NOT_FOUND from GET http://localhost:8080/internal/links/M9D0EcduHQ/policy [DefaultWebClient]
+Original Stack Trace:
+		at com.example.api_gateway.service.LinkPolicyService.lambda$fetchPolicyFromCore$5(LinkPolicyService.java:83) ~[classes/:na]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onNext(FluxMap.java:106) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2097) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxDefaultIfEmpty$DefaultIfEmptySubscriber.onComplete(FluxDefaultIfEmpty.java:134) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableSubscriber.onComplete(FluxMapFuseable.java:152) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxContextWrite$ContextWriteSubscriber.onComplete(FluxContextWrite.java:126) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMapFuseable$MapFuseableConditionalSubscriber.onComplete(FluxMapFuseable.java:350) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxFilterFuseable$FilterFuseableConditionalSubscriber.onComplete(FluxFilterFuseable.java:391) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.Operators$BaseFluxToMonoOperator.completePossiblyEmpty(Operators.java:2098) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.MonoCollect$CollectSubscriber.onComplete(MonoCollect.java:145) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxPeek$PeekSubscriber.onComplete(FluxPeek.java:260) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.core.publisher.FluxMap$MapSubscriber.onComplete(FluxMap.java:144) ~[reactor-core-3.6.0.jar:3.6.0]
+		at reactor.netty.channel.FluxReceive.onInboundComplete(FluxReceive.java:415) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperations.onInboundComplete(ChannelOperations.java:446) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperations.terminate(ChannelOperations.java:500) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at reactor.netty.http.client.HttpClientOperations.onInboundNext(HttpClientOperations.java:768) ~[reactor-netty-http-1.1.13.jar:1.1.13]
+		at reactor.netty.channel.ChannelOperationsHandler.channelRead(ChannelOperationsHandler.java:114) ~[reactor-netty-core-1.1.13.jar:1.1.13]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.MessageToMessageDecoder.channelRead(MessageToMessageDecoder.java:103) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:444) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler$DelegatingChannelHandlerContext.fireChannelRead(CombinedChannelDuplexHandler.java:436) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.fireChannelRead(ByteToMessageDecoder.java:346) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.handler.codec.ByteToMessageDecoder.channelRead(ByteToMessageDecoder.java:318) ~[netty-codec-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.CombinedChannelDuplexHandler.channelRead(CombinedChannelDuplexHandler.java:251) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:442) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.fireChannelRead(AbstractChannelHandlerContext.java:412) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.DefaultChannelPipeline$HeadContext.channelRead(DefaultChannelPipeline.java:1410) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:440) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.AbstractChannelHandlerContext.invokeChannelRead(AbstractChannelHandlerContext.java:420) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.DefaultChannelPipeline.fireChannelRead(DefaultChannelPipeline.java:919) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.AbstractNioByteChannel$NioByteUnsafe.read(AbstractNioByteChannel.java:166) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKey(NioEventLoop.java:788) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKeysOptimized(NioEventLoop.java:724) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.processSelectedKeys(NioEventLoop.java:650) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.channel.nio.NioEventLoop.run(NioEventLoop.java:562) ~[netty-transport-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.concurrent.SingleThreadEventExecutor$4.run(SingleThreadEventExecutor.java:997) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.internal.ThreadExecutorMap$2.run(ThreadExecutorMap.java:74) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at io.netty.util.concurrent.FastThreadLocalRunnable.run(FastThreadLocalRunnable.java:30) ~[netty-common-4.1.101.Final.jar:4.1.101.Final]
+		at java.base/java.lang.Thread.run(Thread.java:1583) ~[na:na]
+
+2026-04-07T18:44:53.004+10:00  INFO 13192 --- [api-gateway] [reactor-http-nio-10] c.e.api_gateway.filter.LinkPolicyFilter  : Политика не найдена, доступ разрешен
+2026-04-07T18:48:19.159+10:00  INFO 13192 --- [api-gateway] [reactor-http-nio-2] c.e.api_gateway.filter.LinkPolicyFilter  : Политика не найдена, доступ разрешен
+2026-04-07T18:55:28.878+10:00  INFO 13192 --- [api-gateway] [reactor-http-nio-5] c.e.api_gateway.filter.LinkPolicyFilter  : Политика не найдена, доступ разрешен
+2026-04-07T18:58:13.690+10:00  INFO 18192 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Starting ApiGatewayApplication using Java 21.0.8 with PID 18192 (C:\Users\angelo\Desktop\urlShortenerMicros\api-gateway\target\classes started by angelo in C:\Users\angelo\Desktop\urlShortenerMicros\api-gateway)
+2026-04-07T18:58:13.692+10:00 DEBUG 18192 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Running with Spring Boot v3.2.0, Spring v6.1.1
+2026-04-07T18:58:13.693+10:00  INFO 18192 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-04-07T18:58:15.200+10:00  INFO 18192 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-04-07T18:58:15.205+10:00  INFO 18192 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-04-07T18:58:15.250+10:00  INFO 18192 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 28 ms. Found 0 Redis repository interfaces.
+2026-04-07T18:58:15.664+10:00  INFO 18192 --- [api-gateway] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=01938e6b-f039-380b-8df2-870e16ae7572
+2026-04-07T18:58:17.955+10:00  INFO 18192 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:58:18.316+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.gateway.config.GatewayProperties   : Routes supplied from Gateway Properties: [RouteDefinition{id='direct_redirect_route', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/{shortcode}}}], filters=[FilterDefinition{name='SetPath', args={_genkey_0=/redirect-api/{shortcode}}}, FilterDefinition{name='Retry', args={retries=2, statuses=BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT, methods=GET,POST, backoff.firstBackoff=100ms, backoff.maxBackoff=500ms, backoff.factor=2}}], uri=http://localhost:8081, order=0, metadata={}}, RouteDefinition{id='redirect_route', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/redirect-api/{shortcode}}}], filters=[], uri=http://localhost:8081, order=0, metadata={}}, RouteDefinition{id='core_api_route', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/core-api/**}}], filters=[], uri=http://localhost:8080/, order=0, metadata={}}, RouteDefinition{id='internal_api_route', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/internal/**}}], filters=[FilterDefinition{name='StripPrefix', args={_genkey_0=1}}], uri=http://localhost:8080, order=0, metadata={}}]
+2026-04-07T18:58:18.505+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [After]
+2026-04-07T18:58:18.505+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Before]
+2026-04-07T18:58:18.505+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Between]
+2026-04-07T18:58:18.505+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Cookie]
+2026-04-07T18:58:18.505+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Header]
+2026-04-07T18:58:18.505+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Host]
+2026-04-07T18:58:18.506+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Method]
+2026-04-07T18:58:18.506+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Path]
+2026-04-07T18:58:18.506+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Query]
+2026-04-07T18:58:18.506+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [ReadBody]
+2026-04-07T18:58:18.506+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [RemoteAddr]
+2026-04-07T18:58:18.506+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+2026-04-07T18:58:18.506+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Weight]
+2026-04-07T18:58:18.506+10:00  INFO 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+2026-04-07T18:58:19.781+10:00  INFO 18192 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:58:20.013+10:00  INFO 18192 --- [api-gateway] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2026-04-07T18:58:20.592+10:00  INFO 18192 --- [api-gateway] [main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8082
+2026-04-07T18:58:21.616+10:00  INFO 18192 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:58:22.630+10:00  INFO 18192 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T18:58:22.671+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition direct_redirect_route applying {_genkey_0=/{shortcode}} to Path
+2026-04-07T18:58:22.694+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition direct_redirect_route applying filter {_genkey_0=/redirect-api/{shortcode}} to SetPath
+2026-04-07T18:58:22.714+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition direct_redirect_route applying filter {retries=2, statuses=BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT, methods=GET,POST, backoff.firstBackoff=100ms, backoff.maxBackoff=500ms, backoff.factor=2} to Retry
+2026-04-07T18:58:22.738+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition matched: direct_redirect_route
+2026-04-07T18:58:22.740+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition redirect_route applying {_genkey_0=/redirect-api/{shortcode}} to Path
+2026-04-07T18:58:22.740+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition matched: redirect_route
+2026-04-07T18:58:22.741+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition core_api_route applying {_genkey_0=/core-api/**} to Path
+2026-04-07T18:58:22.742+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition matched: core_api_route
+2026-04-07T18:58:22.742+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition internal_api_route applying {_genkey_0=/internal/**} to Path
+2026-04-07T18:58:22.743+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition internal_api_route applying filter {_genkey_0=1} to StripPrefix
+2026-04-07T18:58:22.745+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition matched: internal_api_route
+2026-04-07T18:58:22.750+10:00 DEBUG 18192 --- [api-gateway] [main] o.s.c.g.filter.GatewayMetricsFilter      : New routes count: 4
+2026-04-07T18:58:22.753+10:00  INFO 18192 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Started ApiGatewayApplication in 10.784 seconds (process running for 11.667)
+2026-04-07T18:58:27.381+10:00 DEBUG 18192 --- [api-gateway] [reactor-http-nio-3] o.s.c.g.h.RoutePredicateHandlerMapping   : Route matched: direct_redirect_route
+2026-04-07T18:58:27.415+10:00 DEBUG 18192 --- [api-gateway] [reactor-http-nio-3] o.s.c.g.h.RoutePredicateHandlerMapping   : Mapping [Exchange: GET http://localhost:8082/M9D0EcduHQ] to Route{id='direct_redirect_route', uri=http://localhost:8081, order=0, predicate=Paths: [/{shortcode}], match trailing slash: true, gatewayFilters=[[[SetPath template = '/redirect-api/{shortcode}'], order = 1], [[Retry routeId = 'direct_redirect_route', retries = 2, series = list[SERVER_ERROR], statuses = list[502 BAD_GATEWAY, 503 SERVICE_UNAVAILABLE, 504 GATEWAY_TIMEOUT], methods = list[GET, POST], exceptions = list[IOException, TimeoutException]], order = 2]], metadata={}}
+2026-04-07T18:58:27.415+10:00 DEBUG 18192 --- [api-gateway] [reactor-http-nio-3] o.s.c.g.h.RoutePredicateHandlerMapping   : [6ff1aa66-1] Mapped to org.springframework.cloud.gateway.handler.FilteringWebHandler@59941a08
+2026-04-07T18:58:27.418+10:00 DEBUG 18192 --- [api-gateway] [reactor-http-nio-3] o.s.c.g.handler.FilteringWebHandler      : Sorted gatewayFilterFactories: [[GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.RemoveCachedBodyFilter@67f8f5a6}, order = -2147483648], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.AdaptCachedBodyGlobalFilter@6adcf059}, order = -2147482648], [GatewayFilterAdapter{delegate=com.example.api_gateway.filter.LinkPolicyFilter@5e95b0ab}, order = -100], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.NettyWriteResponseFilter@73ddb7ef}, order = -1], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.ForwardPathFilter@670a4738}, order = 0], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.GatewayMetricsFilter@ba0018e}, order = 0], [[SetPath template = '/redirect-api/{shortcode}'], order = 1], [[Retry routeId = 'direct_redirect_route', retries = 2, series = list[SERVER_ERROR], statuses = list[502 BAD_GATEWAY, 503 SERVICE_UNAVAILABLE, 504 GATEWAY_TIMEOUT], methods = list[GET, POST], exceptions = list[IOException, TimeoutException]], order = 2], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.RouteToRequestUrlFilter@141b011a}, order = 10000], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.config.GatewayNoLoadBalancerClientAutoConfiguration$NoLoadBalancerClientFilter@45311a99}, order = 10150], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.WebsocketRoutingFilter@47ffdbba}, order = 2147483646], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.NettyRoutingFilter@5876bed9}, order = 2147483647], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.ForwardRoutingFilter@7976e536}, order = 2147483647]]
+2026-04-07T18:58:27.452+10:00 DEBUG 18192 --- [api-gateway] [reactor-http-nio-3] c.e.api_gateway.filter.LinkPolicyFilter  : Processing request for shortcode: M9D0EcduHQ
+2026-04-07T18:58:28.244+10:00 DEBUG 18192 --- [api-gateway] [lettuce-nioEventLoop-5-1] c.e.a.service.LinkPolicyService          : Retrieved policy from Redis for shortcode: M9D0EcduHQ
+2026-04-07T18:58:28.244+10:00 DEBUG 18192 --- [api-gateway] [lettuce-nioEventLoop-5-1] c.e.api_gateway.filter.LinkPolicyFilter  : Access granted for shortcode: M9D0EcduHQ, client IP: 127.0.0.1
+2026-04-07T18:58:28.289+10:00 DEBUG 18192 --- [api-gateway] [lettuce-nioEventLoop-5-1] g.f.h.o.ObservedRequestHttpHeadersFilter : Will instrument the HTTP request headers [User-Agent:"PostmanRuntime/7.53.0", Accept:"*/*", Postman-Token:"133d52aa-b276-48ba-b1a6-cf9f2b993f3f", Host:"localhost:8082", Accept-Encoding:"gzip, deflate, br", Forwarded:"proto=http;host="localhost:8082";for="[0:0:0:0:0:0:0:1]:59027"", X-Forwarded-For:"0:0:0:0:0:0:0:1", X-Forwarded-Proto:"http", X-Forwarded-Port:"8082", X-Forwarded-Host:"localhost:8082"]
+2026-04-07T18:58:28.298+10:00 DEBUG 18192 --- [api-gateway] [lettuce-nioEventLoop-5-1] g.f.h.o.ObservedRequestHttpHeadersFilter : Client observation  {name=http.client.requests(null), error=null, context=name='http.client.requests', contextualName='null', error='null', lowCardinalityKeyValues=[http.method='GET', http.status_code='UNKNOWN', spring.cloud.gateway.route.id='direct_redirect_route', spring.cloud.gateway.route.uri='http://localhost:8081'], highCardinalityKeyValues=[http.uri='http://localhost:8082/redirect-api/M9D0EcduHQ'], map=[class io.micrometer.core.instrument.Timer$Sample='io.micrometer.core.instrument.Timer$Sample@7ea001', class io.micrometer.core.instrument.LongTaskTimer$Sample='SampleImpl{duration(seconds)=0.0017023, duration(nanos)=1702300.0, startTimeNanos=2035807683656100}'], parentObservation={name=http.server.requests(null), error=null, context=name='http.server.requests', contextualName='null', error='null', lowCardinalityKeyValues=[exception='none', method='GET', outcome='SUCCESS', status='200', uri='UNKNOWN'], highCardinalityKeyValues=[http.url='/M9D0EcduHQ'], map=[class io.micrometer.core.instrument.Timer$Sample='io.micrometer.core.instrument.Timer$Sample@6db935da', class io.micrometer.core.instrument.LongTaskTimer$Sample='SampleImpl{duration(seconds)=0.9423601, duration(nanos)=9.423601E8, startTimeNanos=2035806743330300}'], parentObservation=null}} created for the request. New headers are [User-Agent:"PostmanRuntime/7.53.0", Accept:"*/*", Postman-Token:"133d52aa-b276-48ba-b1a6-cf9f2b993f3f", Host:"localhost:8082", Accept-Encoding:"gzip, deflate, br", Forwarded:"proto=http;host="localhost:8082";for="[0:0:0:0:0:0:0:1]:59027"", X-Forwarded-For:"0:0:0:0:0:0:0:1", X-Forwarded-Proto:"http", X-Forwarded-Port:"8082", X-Forwarded-Host:"localhost:8082"]
+2026-04-07T18:58:28.430+10:00 DEBUG 18192 --- [api-gateway] [reactor-http-nio-5] .f.h.o.ObservedResponseHttpHeadersFilter : Will instrument the response
+2026-04-07T18:58:28.431+10:00 DEBUG 18192 --- [api-gateway] [reactor-http-nio-5] .f.h.o.ObservedResponseHttpHeadersFilter : The response was handled for observation {name=http.client.requests(null), error=null, context=name='http.client.requests', contextualName='null', error='null', lowCardinalityKeyValues=[http.method='GET', http.status_code='UNKNOWN', spring.cloud.gateway.route.id='direct_redirect_route', spring.cloud.gateway.route.uri='http://localhost:8081'], highCardinalityKeyValues=[http.uri='http://localhost:8082/redirect-api/M9D0EcduHQ'], map=[class io.micrometer.core.instrument.Timer$Sample='io.micrometer.core.instrument.Timer$Sample@7ea001', class io.micrometer.core.instrument.LongTaskTimer$Sample='SampleImpl{duration(seconds)=0.1346811, duration(nanos)=1.346811E8, startTimeNanos=2035807683656100}'], parentObservation={name=http.server.requests(null), error=null, context=name='http.server.requests', contextualName='null', error='null', lowCardinalityKeyValues=[exception='none', method='GET', outcome='SUCCESS', status='200', uri='UNKNOWN'], highCardinalityKeyValues=[http.url='/M9D0EcduHQ'], map=[class io.micrometer.core.instrument.Timer$Sample='io.micrometer.core.instrument.Timer$Sample@6db935da', class io.micrometer.core.instrument.LongTaskTimer$Sample='SampleImpl{duration(seconds)=1.0755362, duration(nanos)=1.0755362E9, startTimeNanos=2035806743330300}'], parentObservation=null}}
+2026-04-07T18:58:28.471+10:00 DEBUG 18192 --- [api-gateway] [reactor-http-nio-3] c.e.api_gateway.filter.LinkPolicyFilter  : Redirect completed in 1019 ms
+2026-04-07T18:58:28.472+10:00  INFO 18192 --- [api-gateway] [reactor-http-nio-3] c.e.api_gateway.filter.LinkPolicyFilter  : Политика не найдена, доступ разрешен
+2026-04-07T23:03:11.070+10:00  INFO 21120 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Starting ApiGatewayApplication using Java 21.0.8 with PID 21120 (C:\Users\angelo\Desktop\urlShortenerMicros\api-gateway\target\classes started by angelo in C:\Users\angelo\Desktop\urlShortenerMicros\api-gateway)
+2026-04-07T23:03:11.071+10:00 DEBUG 21120 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Running with Spring Boot v3.2.0, Spring v6.1.1
+2026-04-07T23:03:11.073+10:00  INFO 21120 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : No active profile set, falling back to 1 default profile: "default"
+2026-04-07T23:03:12.618+10:00  INFO 21120 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Multiple Spring Data modules found, entering strict repository configuration mode
+2026-04-07T23:03:12.623+10:00  INFO 21120 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Bootstrapping Spring Data Redis repositories in DEFAULT mode.
+2026-04-07T23:03:12.661+10:00  INFO 21120 --- [api-gateway] [main] .s.d.r.c.RepositoryConfigurationDelegate : Finished Spring Data repository scanning in 22 ms. Found 0 Redis repository interfaces.
+2026-04-07T23:03:13.261+10:00  INFO 21120 --- [api-gateway] [main] o.s.cloud.context.scope.GenericScope     : BeanFactory id=01938e6b-f039-380b-8df2-870e16ae7572
+2026-04-07T23:03:15.828+10:00  INFO 21120 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T23:03:16.179+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.gateway.config.GatewayProperties   : Routes supplied from Gateway Properties: [RouteDefinition{id='direct_redirect_route', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/{shortcode}}}], filters=[FilterDefinition{name='SetPath', args={_genkey_0=/redirect-api/{shortcode}}}, FilterDefinition{name='Retry', args={retries=2, statuses=BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT, methods=GET,POST, backoff.firstBackoff=100ms, backoff.maxBackoff=500ms, backoff.factor=2}}], uri=http://localhost:8081, order=0, metadata={}}, RouteDefinition{id='redirect_route', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/redirect-api/{shortcode}}}], filters=[], uri=http://localhost:8081, order=0, metadata={}}, RouteDefinition{id='core_api_route', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/core-api/**}}], filters=[], uri=http://localhost:8080/, order=0, metadata={}}, RouteDefinition{id='internal_api_route', predicates=[PredicateDefinition{name='Path', args={_genkey_0=/internal/**}}], filters=[FilterDefinition{name='StripPrefix', args={_genkey_0=1}}], uri=http://localhost:8080, order=0, metadata={}}]
+2026-04-07T23:03:16.370+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [After]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Before]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Between]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Cookie]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Header]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Host]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Method]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Path]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Query]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [ReadBody]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [RemoteAddr]
+2026-04-07T23:03:16.371+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [XForwardedRemoteAddr]
+2026-04-07T23:03:16.372+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [Weight]
+2026-04-07T23:03:16.372+10:00  INFO 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : Loaded RoutePredicateFactory [CloudFoundryRouteService]
+2026-04-07T23:03:17.675+10:00  INFO 21120 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T23:03:17.892+10:00  INFO 21120 --- [api-gateway] [main] o.s.b.a.e.web.EndpointLinksResolver      : Exposing 4 endpoint(s) beneath base path '/actuator'
+2026-04-07T23:03:18.663+10:00  INFO 21120 --- [api-gateway] [main] o.s.b.web.embedded.netty.NettyWebServer  : Netty started on port 8082
+2026-04-07T23:03:19.680+10:00  INFO 21120 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T23:03:20.708+10:00  INFO 21120 --- [api-gateway] [main] o.s.cloud.commons.util.InetUtils         : Cannot determine local hostname
+2026-04-07T23:03:20.744+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition direct_redirect_route applying {_genkey_0=/{shortcode}} to Path
+2026-04-07T23:03:20.763+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition direct_redirect_route applying filter {_genkey_0=/redirect-api/{shortcode}} to SetPath
+2026-04-07T23:03:20.788+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition direct_redirect_route applying filter {retries=2, statuses=BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT, methods=GET,POST, backoff.firstBackoff=100ms, backoff.maxBackoff=500ms, backoff.factor=2} to Retry
+2026-04-07T23:03:20.813+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition matched: direct_redirect_route
+2026-04-07T23:03:20.813+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition redirect_route applying {_genkey_0=/redirect-api/{shortcode}} to Path
+2026-04-07T23:03:20.816+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition matched: redirect_route
+2026-04-07T23:03:20.816+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition core_api_route applying {_genkey_0=/core-api/**} to Path
+2026-04-07T23:03:20.817+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition matched: core_api_route
+2026-04-07T23:03:20.817+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition internal_api_route applying {_genkey_0=/internal/**} to Path
+2026-04-07T23:03:20.818+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition internal_api_route applying filter {_genkey_0=1} to StripPrefix
+2026-04-07T23:03:20.820+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.r.RouteDefinitionRouteLocator    : RouteDefinition matched: internal_api_route
+2026-04-07T23:03:20.825+10:00 DEBUG 21120 --- [api-gateway] [main] o.s.c.g.filter.GatewayMetricsFilter      : New routes count: 4
+2026-04-07T23:03:20.827+10:00  INFO 21120 --- [api-gateway] [main] c.e.api_gateway.ApiGatewayApplication    : Started ApiGatewayApplication in 11.941 seconds (process running for 13.959)
+2026-04-07T23:05:58.659+10:00 DEBUG 21120 --- [api-gateway] [reactor-http-nio-3] o.s.c.g.h.RoutePredicateHandlerMapping   : Route matched: direct_redirect_route
+2026-04-07T23:05:58.674+10:00 DEBUG 21120 --- [api-gateway] [reactor-http-nio-3] o.s.c.g.h.RoutePredicateHandlerMapping   : Mapping [Exchange: GET http://localhost:8082/M9D0E] to Route{id='direct_redirect_route', uri=http://localhost:8081, order=0, predicate=Paths: [/{shortcode}], match trailing slash: true, gatewayFilters=[[[SetPath template = '/redirect-api/{shortcode}'], order = 1], [[Retry routeId = 'direct_redirect_route', retries = 2, series = list[SERVER_ERROR], statuses = list[502 BAD_GATEWAY, 503 SERVICE_UNAVAILABLE, 504 GATEWAY_TIMEOUT], methods = list[GET, POST], exceptions = list[IOException, TimeoutException]], order = 2]], metadata={}}
+2026-04-07T23:05:58.675+10:00 DEBUG 21120 --- [api-gateway] [reactor-http-nio-3] o.s.c.g.h.RoutePredicateHandlerMapping   : [4786c964-1] Mapped to org.springframework.cloud.gateway.handler.FilteringWebHandler@3dbc8729
+2026-04-07T23:05:58.679+10:00 DEBUG 21120 --- [api-gateway] [reactor-http-nio-3] o.s.c.g.handler.FilteringWebHandler      : Sorted gatewayFilterFactories: [[GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.RemoveCachedBodyFilter@45311a99}, order = -2147483648], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.AdaptCachedBodyGlobalFilter@772cf46b}, order = -2147482648], [GatewayFilterAdapter{delegate=com.example.api_gateway.filter.LinkPolicyFilter@670a4738}, order = -100], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.NettyWriteResponseFilter@ba0018e}, order = -1], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.ForwardPathFilter@420b55ed}, order = 0], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.GatewayMetricsFilter@42edde25}, order = 0], [[SetPath template = '/redirect-api/{shortcode}'], order = 1], [[Retry routeId = 'direct_redirect_route', retries = 2, series = list[SERVER_ERROR], statuses = list[502 BAD_GATEWAY, 503 SERVICE_UNAVAILABLE, 504 GATEWAY_TIMEOUT], methods = list[GET, POST], exceptions = list[IOException, TimeoutException]], order = 2], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.RouteToRequestUrlFilter@7037a680}, order = 10000], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.config.GatewayNoLoadBalancerClientAutoConfiguration$NoLoadBalancerClientFilter@6fe5da76}, order = 10150], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.WebsocketRoutingFilter@f237ae7}, order = 2147483646], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.NettyRoutingFilter@47ffdbba}, order = 2147483647], [GatewayFilterAdapter{delegate=org.springframework.cloud.gateway.filter.ForwardRoutingFilter@492c8137}, order = 2147483647]]
+2026-04-07T23:05:58.733+10:00 DEBUG 21120 --- [api-gateway] [reactor-http-nio-3] c.e.api_gateway.filter.LinkPolicyFilter  : Processing request for shortcode: M9D0E
+2026-04-07T23:05:59.964+10:00  WARN 21120 --- [api-gateway] [lettuce-nioEventLoop-5-1] c.e.a.service.LinkPolicyService          : Shortcode M9D0E not found in Redis
+2026-04-07T23:05:59.965+10:00  WARN 21120 --- [api-gateway] [lettuce-nioEventLoop-5-1] c.e.api_gateway.filter.LinkPolicyFilter  : Shortcode M9D0E not found in Redis, returning 404

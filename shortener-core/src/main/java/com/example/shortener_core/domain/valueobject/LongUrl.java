@@ -18,7 +18,7 @@ public class LongUrl {
         try {
             URI uri = new URI(url);
 
-            // Добавляем схему по умолчанию
+            // Добавляем схему по умолчанию (https)
             if (uri.getScheme() == null) {
                 uri = new URI("https://" + url);
             }
@@ -29,7 +29,7 @@ public class LongUrl {
 
             uri = uri.normalize();
 
-            // ВАЖНО: canonicalization — последний шаг
+            // canonicalize — последний шаг
             return canonicalize(uri);
 
         } catch (URISyntaxException e) {

@@ -1,9 +1,12 @@
 package com.example.shortener_core.domain.model;
 
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -11,7 +14,10 @@ import java.util.List;
 
 @Data
 @Builder
+@NoArgsConstructor
+@AllArgsConstructor
 @JsonInclude(JsonInclude.Include.NON_NULL)
+@JsonIgnoreProperties(ignoreUnknown = true)
 public class LinkPolicyRedis implements Serializable {
     
     private List<String> allowed_ips;
@@ -27,7 +33,10 @@ public class LinkPolicyRedis implements Serializable {
     
     @Data
     @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
     @JsonInclude(JsonInclude.Include.NON_NULL)
+    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class AuthConfig implements Serializable {
         private String sso_endpoint;
         private String api_key_header;
@@ -54,7 +63,7 @@ public class LinkPolicyRedis implements Serializable {
             return null;
         }
         
-        // For now, return a simple config - in production you'd parse JSON properly
+        // Пока что возвращает простую конфигурацию — в дальнейшем корректно обрабатывать JSON.
         return AuthConfig.builder().build();
     }
 }
