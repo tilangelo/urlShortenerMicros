@@ -98,3 +98,6 @@ gateway:
     base-url: http://localhost:8081
   cache:
     policy-ttl-hours: 24
+  auth:
+    api-key-endpoint: ${API_KEY_VALIDATION_ENDPOINT:http://auth-service:8083/api/v1/validate-key}
+    sso-endpoint: ${SSO_VALIDATION_ENDPOINT:http://auth-service:8083/api/v1/validate-sso}

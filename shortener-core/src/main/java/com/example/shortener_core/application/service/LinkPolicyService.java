@@ -27,12 +27,11 @@ public class LinkPolicyService implements LinkPolicyManagementUseCase {
     
     @Override
     @Transactional
-    public LinkPolicy createPolicy(Long linkId, String shortcode, 
+    public LinkPolicy createPolicy(Long linkId, String shortcode,
                                   List<String> allowedIps,
                                   Instant allowedTimeStart,
                                   Instant allowedTimeEnd,
-                                  LinkPolicy.AuthType authType,
-                                  String authConfig) {
+                                  LinkPolicy.AuthType authType) {
         
         if (repository.existsByShortcode(shortcode)) {
             throw new IllegalArgumentException("Policy already exists for shortcode: " + shortcode);
@@ -46,8 +45,8 @@ public class LinkPolicyService implements LinkPolicyManagementUseCase {
         ShortCode shortCode = ShortCode.of(shortcode);
         
         LinkPolicy linkPolicy = LinkPolicy.create(
-            id, linkId, shortCode, allowedIps, 
-            allowedTimeStart, allowedTimeEnd, authType, authConfig
+            id, linkId, shortCode, allowedIps,
+            allowedTimeStart, allowedTimeEnd, authType
         );
         
         LinkPolicy saved = repository.save(linkPolicy);

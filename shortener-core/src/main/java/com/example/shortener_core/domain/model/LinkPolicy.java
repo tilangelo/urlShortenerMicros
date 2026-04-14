@@ -16,14 +16,13 @@ public class LinkPolicy {
     private final Instant allowedTimeStart;
     private final Instant allowedTimeEnd;
     private final AuthType authType;
-    private final String authConfig;
     private final Instant createdAt;
     private final Instant updatedAt;
     
-    public LinkPolicy(Long id, Long linkId, ShortCode shortcode, 
-                      List<String> allowedIps, Instant allowedTimeStart, 
-                      Instant allowedTimeEnd, AuthType authType, 
-                      String authConfig, Instant createdAt, Instant updatedAt) {
+    public LinkPolicy(Long id, Long linkId, ShortCode shortcode,
+                      List<String> allowedIps, Instant allowedTimeStart,
+                      Instant allowedTimeEnd, AuthType authType,
+                      Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.linkId = linkId;
         this.shortcode = shortcode;
@@ -31,19 +30,17 @@ public class LinkPolicy {
         this.allowedTimeStart = allowedTimeStart;
         this.allowedTimeEnd = allowedTimeEnd;
         this.authType = authType;
-        this.authConfig = authConfig;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }
     
     public static LinkPolicy create(Long id, Long linkId, ShortCode shortcode,
                                   List<String> allowedIps, Instant allowedTimeStart,
-                                  Instant allowedTimeEnd, AuthType authType,
-                                  String authConfig) {
+                                  Instant allowedTimeEnd, AuthType authType) {
         Instant now = Instant.now();
         return new LinkPolicy(
-            id, linkId, shortcode, allowedIps, allowedTimeStart, 
-            allowedTimeEnd, authType, authConfig, now, now
+            id, linkId, shortcode, allowedIps, allowedTimeStart,
+            allowedTimeEnd, authType, now, now
         );
     }
     
@@ -66,7 +63,6 @@ public class LinkPolicy {
         NONE(null),
         CORPORATE_SSO("corporate_sso"),
         API_KEY("api_key"),
-        JWT("jwt"),
         BASIC("basic");
         
         private final String value;

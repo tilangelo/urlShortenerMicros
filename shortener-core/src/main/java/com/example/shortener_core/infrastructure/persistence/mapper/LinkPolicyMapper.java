@@ -17,7 +17,6 @@ public class LinkPolicyMapper {
             entity.getAllowedTimeStart(),
             entity.getAllowedTimeEnd(),
             entity.getAuthTypeEnum(),
-            entity.getAuthConfig(),
             entity.getCreatedAt(),
             entity.getUpdatedAt()
         );
@@ -32,7 +31,6 @@ public class LinkPolicyMapper {
             domain.getAllowedTimeStart(),
             domain.getAllowedTimeEnd(),
             domain.getAuthType(),
-            domain.getAuthConfig(),
             domain.getCreatedAt(),
             domain.getUpdatedAt()
         );

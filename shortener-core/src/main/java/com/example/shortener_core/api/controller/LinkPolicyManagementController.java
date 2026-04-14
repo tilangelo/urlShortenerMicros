@@ -28,8 +28,7 @@ public class LinkPolicyManagementController {
             request.getAllowedIps(),
             request.getAllowedTimeStart(),
             request.getAllowedTimeEnd(),
-            request.getAuthType(),
-            request.getAuthConfig()
+            request.getAuthType()
         );
         
         return ResponseEntity.ok(LinkPolicyResponse.fromRedis(

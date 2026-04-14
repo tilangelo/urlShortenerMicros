@@ -6,12 +6,11 @@ import java.util.Optional;
 
 public interface LinkPolicyManagementUseCase {
     
-    LinkPolicy createPolicy(Long linkId, String shortcode, 
+    LinkPolicy createPolicy(Long linkId, String shortcode,
                            java.util.List<String> allowedIps,
                            java.time.Instant allowedTimeStart,
                            java.time.Instant allowedTimeEnd,
-                           LinkPolicy.AuthType authType,
-                           String authConfig);
+                           LinkPolicy.AuthType authType);
     
     Optional<LinkPolicy> getPolicyByShortcode(String shortcode);
     

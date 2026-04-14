@@ -110,8 +110,7 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
                                          GatewayFilterChain chain, Instant startTime) {
         ServerHttpRequest request = exchange.getRequest();
         String clientIp = getClientIp(request);
-        String authHeader = request.getHeaders().getFirst("Authorization");
-        
+
         // Проверяем временное окно
         if (!policy.isTimeWindowValid()) {
             log.warn("Time window validation failed for client IP: {}", clientIp);
@@ -127,8 +126,7 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
         }
         
         // Проверяем аутентификацию
-        return authValidationService.validateAuth(policy.getAuth_type(), policy.getAuth_config(), 
-                                                 authHeader, clientIp)
+        return authValidationService.validateAuth(policy.getAuth_type(), request, clientIp)
                 .flatMap(authValid -> {
                     if (!authValid) {
                         log.warn("Authentication failed for client IP: {}", clientIp);
