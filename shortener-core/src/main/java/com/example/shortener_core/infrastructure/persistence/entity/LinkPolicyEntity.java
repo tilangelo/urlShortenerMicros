@@ -2,9 +2,6 @@ package com.example.shortener_core.infrastructure.persistence.entity;
 
 import com.example.shortener_core.domain.model.LinkPolicy;
 import com.example.shortener_core.infrastructure.persistence.converter.ListToJsonConverter;
-import com.example.shortener_core.infrastructure.persistence.converter.StringToJsonConverter;
-import com.fasterxml.jackson.core.type.TypeReference;
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.json.JsonMapper;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import jakarta.persistence.*;
@@ -13,7 +10,6 @@ import lombok.Setter;
 import org.hibernate.annotations.JdbcTypeCode;
 import org.hibernate.type.SqlTypes;
 
-import java.io.IOException;
 import java.time.Instant;
 import java.util.List;
 
@@ -54,12 +50,7 @@ private List<String> allowedIps;
     
     @Column(name = "auth_type", length = 50)
     private String authType;
-    
-    @Column(name = "auth_config")
-@JdbcTypeCode(SqlTypes.JSON)
-@Convert(converter = StringToJsonConverter.class)
-private String authConfig;
-    
+
     @Column(name = "created_at", nullable = false)
     private Instant createdAt;
     
@@ -71,7 +62,7 @@ private String authConfig;
     public LinkPolicyEntity(Long id, Long linkId, String shortcode,
                            List<String> allowedIps, Instant allowedTimeStart,
                            Instant allowedTimeEnd, LinkPolicy.AuthType authType,
-                           String authConfig, Instant createdAt, Instant updatedAt) {
+                           Instant createdAt, Instant updatedAt) {
         this.id = id;
         this.linkId = linkId;
         this.shortcode = shortcode;
@@ -79,7 +70,6 @@ private String authConfig;
         this.allowedTimeStart = allowedTimeStart;
         this.allowedTimeEnd = allowedTimeEnd;
         this.authType = authType.getValue();
-        this.authConfig = authConfig;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
     }

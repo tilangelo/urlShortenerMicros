@@ -24,6 +24,4 @@ public class CreateLinkPolicyRequest {
     private Instant allowedTimeEnd;
     
     private LinkPolicy.AuthType authType = LinkPolicy.AuthType.NONE;
-    
-    private String authConfig;
 }
