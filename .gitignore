@@ -1,3 +1,4 @@
+api-gateway/logs/
 .env*
 .env
 HELP.md
