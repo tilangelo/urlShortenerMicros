@@ -14,12 +14,14 @@ import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.server.reactive.ServerHttpRequest;
 import org.springframework.http.server.reactive.ServerHttpResponse;
 import org.springframework.stereotype.Component;
 import org.springframework.web.server.ServerWebExchange;
 import reactor.core.publisher.Mono;
 
+import java.nio.charset.StandardCharsets;
 import java.time.Duration;
 import java.time.Instant;
 
@@ -33,9 +35,13 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
     private final CircuitBreaker circuitBreaker;
     
     // Metrics
+    // доступ запрещен
     private final Counter accessDeniedTotal = Metrics.counter("access_denied_total");
+    // количество переходов
     private final Counter clicksTotal = Metrics.counter("clicks_total");
+    // успешные редиректы
     private final Counter redirectSuccessTotal = Metrics.counter("redirect_success_total");
+    //
     private final Counter circuitBreakerOpenTotal = Metrics.counter("circuit_breaker_open_total");
     private final Timer requestLatency = Metrics.timer("request_latency_seconds");
     private static final Duration FILTER_TIMEOUT = Duration.ofSeconds(8);
@@ -44,7 +50,6 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
     public Mono<Void> filter(ServerWebExchange exchange, GatewayFilterChain chain) {
         Instant startTime = Instant.now();
         ServerHttpRequest request = exchange.getRequest();
-        ServerHttpResponse response = exchange.getResponse();
         
         // Извлекаем shortcode из пути
         String path = request.getPath().value();
@@ -64,44 +69,58 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
         
         log.debug("Processing request for shortcode: {}", shortcode);
         
-        // Проверяем существование ссылки в Redis (без fallback в core)
+        // Проверяем существование ссылки в Redis
         return linkPolicyService.shortcodeExistsInRedis(shortcode)
                 .flatMap(exists -> {
                     if (!exists) {
                         log.warn("Shortcode {} not found in Redis, returning 404", shortcode);
+                        accessDeniedTotal.increment();
+                        Duration latency = Duration.between(startTime, Instant.now());
+                        requestLatency.record(latency);
                         return sendErrorResponse(exchange.getResponse(), HttpStatus.NOT_FOUND, "Short link not found");
                     }
                     
-                    // Ссылка существует, продолжаем с проверкой политики
+                    // Ссылка существует, продолжаем с поиска политики для неё
                     return linkPolicyService.getPolicy(shortcode)
                             .transform(io.github.resilience4j.reactor.circuitbreaker.operator.CircuitBreakerOperator.of(circuitBreaker))
                             .timeout(FILTER_TIMEOUT)
-                            .flatMap(policy -> validateAndProcess(policy, exchange, chain, startTime))
+
+                            // если политика не найдена, разрешаем доступ
                             .switchIfEmpty(
-                                // Политика не найдена, разрешаем доступ
-                                Mono.defer(() -> {
-                                    log.info("Политика не найдена, доступ разрешен");
-                                    clicksTotal.increment();
-                                    return chain.filter(exchange);
-                                })
-                            );
+                                    Mono.defer(() -> {
+                                        log.info("Политика не найдена, доступ разрешен");
+                                        clicksTotal.increment();
+                                        return chain.filter(exchange)
+                                                .doOnSuccess(aVoid -> {
+                                                    Duration latency = Duration.between(startTime, Instant.now());
+                                                    requestLatency.record(latency);
+                                                    redirectSuccessTotal.increment();
+                                                    log.debug("Redirect completed (no policy) in {} ms", latency.toMillis());
+                                                })
+                                                .then(Mono.empty());
+                                    }))
+
+                            // если политика найдена - валидируем по ней
+                            .flatMap(policy -> validateAndProcess(policy, exchange, chain, startTime));
                 })
-                .doOnError(error -> {
+
+                // обработка ошибок cb и таймаута
+                .onErrorResume(error -> {
+                    Duration latency = Duration.between(startTime, Instant.now());
+                    requestLatency.record(latency);
+
                     if (error instanceof io.github.resilience4j.circuitbreaker.CallNotPermittedException) {
                         circuitBreakerOpenTotal.increment();
+                        accessDeniedTotal.increment();
                         log.warn("Circuit breaker is OPEN for shortcode: {}", shortcode);
-                        sendErrorResponse(exchange.getResponse(), HttpStatus.SERVICE_UNAVAILABLE, "Service temporarily unavailable");
-                    } else if (error instanceof java.util.concurrent.TimeoutException) {
-                        log.warn("Request timeout for shortcode: {}", shortcode);
-                        sendErrorResponse(exchange.getResponse(), HttpStatus.GATEWAY_TIMEOUT, "Request timeout");
-                    }
-                })
-                .onErrorResume(error -> {
-                    if (error instanceof io.github.resilience4j.circuitbreaker.CallNotPermittedException) {
                         return sendErrorResponse(exchange.getResponse(), HttpStatus.SERVICE_UNAVAILABLE, "Service temporarily unavailable");
+
                     } else if (error instanceof java.util.concurrent.TimeoutException) {
+                        accessDeniedTotal.increment();
+                        log.warn("Request timeout for shortcode: {}", shortcode);
                         return sendErrorResponse(exchange.getResponse(), HttpStatus.GATEWAY_TIMEOUT, "Request timeout");
                     }
+
                     return Mono.error(error);
                 });
     }
@@ -109,7 +128,7 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
     private Mono<Void> validateAndProcess(LinkPolicy policy, ServerWebExchange exchange, 
                                          GatewayFilterChain chain, Instant startTime) {
         ServerHttpRequest request = exchange.getRequest();
-        String clientIp = getClientIp(request);
+        String clientIp = getClientIp(request).trim();
 
         // Проверяем временное окно
         if (!policy.isTimeWindowValid()) {
@@ -197,12 +216,14 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
     
     private Mono<Void> sendErrorResponse(ServerHttpResponse response, HttpStatus status, String message) {
         response.setStatusCode(status);
-        response.getHeaders().add("Content-Type", "application/json");
+        response.getHeaders().setContentType(MediaType.APPLICATION_JSON);
         
         String body = String.format("{\"error\": \"%s\", \"message\": \"%s\"}", 
                                    status.getReasonPhrase(), message);
         
-        org.springframework.core.io.buffer.DataBuffer buffer = response.bufferFactory().wrap(body.getBytes());
+        org.springframework.core.io.buffer.DataBuffer buffer = response.bufferFactory()
+                .wrap(body.getBytes(StandardCharsets.UTF_8));
+
         return response.writeWith(Mono.just(buffer));
     }
     
