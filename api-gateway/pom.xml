@@ -83,6 +83,14 @@
             <artifactId>commons-pool2</artifactId>
         </dependency>
 
+        <!-- apache commons net для работы с CIDR -->
+        <dependency>
+            <groupId>commons-net</groupId>
+            <artifactId>commons-net</artifactId>
+            <version>3.11.1</version>
+            <scope>compile</scope>
+        </dependency>
+
         <!-- Circuit Breaker -->
         <dependency>
             <groupId>io.github.resilience4j</groupId>

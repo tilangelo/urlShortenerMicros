@@ -7,6 +7,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
+import java.time.Duration;
+
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -56,7 +58,7 @@ public class AuthEndpointExchange {
     }
 
 
-    public Mono<Boolean> apiKeyExchange(String apiKey, String clientIp){
+    public Mono<Boolean> apiKeyExchange(String apiKey, String clientIp, Duration API_KEY_TIMEOUT){
 
         return webClientBuilder.build()
                 .post()
@@ -70,6 +72,8 @@ public class AuthEndpointExchange {
                     log.warn("API key validation endpoint returned empty body");
                     return Mono.just(false);
                 }))
+
+                .timeout(API_KEY_TIMEOUT)
 
                 .doOnSuccess(valid ->
                         log.debug("API key validation result: {}", valid)

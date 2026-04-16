@@ -64,7 +64,7 @@ public class AuthValidationService {
 
         // endpoint берется из .env или дефолтное значение
         //TODO: СЕЙЧАС ПРИ FALSE ТОЛЬКО ЛОГ, ДАЛЬШЕ МОЖНО ИНТЕГРИРОВАТЬ С СЕРВИСОМ И ПРИ FALSE РЕДИРЕКТ НА АВТОРИЗАЦИЮ
-        return authEndpointExchange.apiKeyExchange(apiKey, clientIp);
+        return authEndpointExchange.apiKeyExchange(apiKey, clientIp, AUTH_TIMEOUT);
     }
 
 

@@ -61,6 +61,9 @@ public class LinkPolicyService {
                                         return Mono.just(policy);
                                     }
                                 })
+                                .switchIfEmpty(Mono.defer(() -> {
+                                    return Mono.empty();
+                                }))
                 );
     }
 
@@ -69,7 +72,9 @@ public class LinkPolicyService {
 
         WebClient webClient = webClientBuilder
                 .clone()
-                .codecs(configurer -> configurer.defaultCodecs().maxInMemorySize(16 * 1024 * 1024)) // 16MB
+                .codecs(configurer -> configurer
+                        .defaultCodecs()
+                        .maxInMemorySize(16 * 1024 * 1024)) // 16MB
                 .build();
 
         return webClient
