@@ -1,39 +1,60 @@
 package com.example.shortener_core.application.service;
 
+import com.example.shortener_core.application.port.event.ShortUrlCreatedEvent;
 import com.example.shortener_core.application.port.in.CreateShortUrlUseCase;
-import com.example.shortener_core.application.port.out.CachePort;
 import com.example.shortener_core.application.port.out.IdGenerator;
 import com.example.shortener_core.application.port.out.UrlRepositoryPort;
 import com.example.shortener_core.common.exception.ValidationException;
 import com.example.shortener_core.common.util.Base62Encoder;
 import com.example.shortener_core.domain.model.ShortUrl;
-import com.example.shortener_core.domain.model.ShortUrlRedisSerializable;
 import com.example.shortener_core.domain.valueobject.LongUrl;
 import com.example.shortener_core.domain.valueobject.ShortCode;
-import com.example.shortener_core.infrastructure.persistence.mapper.UrlMapper;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Instant;
+
+/**
+ * Создаёт короткие ссылки и сохраняет их в PostgreSQL.
+ * Запись в Redis запускается событием только после успешного commit.
+ */
 @Service
 @Slf4j
 public class ShortenUrlService implements CreateShortUrlUseCase {
 
     private final IdGenerator idGenerator;
     private final UrlRepositoryPort urlRepository;
-    private final CachePort cachePort;
+    private final ApplicationEventPublisher eventPublisher;
 
+    /**
+     * Создаёт сервис с генератором id, хранилищем ссылок и publisher-ом событий.
+     *
+     * @param idGenerator генератор уникальных идентификаторов
+     * @param urlRepository хранилище коротких ссылок
+     * @param eventPublisher публикация события для заполнения кеша
+     */
     public ShortenUrlService(IdGenerator idGenerator,
                              UrlRepositoryPort urlRepository,
-                             CachePort cachePort) {
+                             ApplicationEventPublisher eventPublisher) {
 
         this.idGenerator = idGenerator;
         this.urlRepository = urlRepository;
-        this.cachePort = cachePort;
+        this.eventPublisher = eventPublisher;
     }
 
 
+    /**
+     * Проверяет URL, создаёт shortcode, сохраняет ссылку и публикует событие для Redis.
+     *
+     * @param longUrl исходный URL
+     * @param expiration момент окончания действия ссылки
+     * @return сохранённая короткая ссылка
+     */
     @Override
-    public ShortUrl createShortUrl(String longUrl, Long ttl) {
+    @Transactional
+    public ShortUrl createShortUrl(String longUrl, Instant expiration) {
         log.info("Создание короткой ссылки для {}", longUrl);
 
         validateLongUrl(longUrl);
@@ -42,7 +63,7 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
         Long genId = idGenerator.nextId();
         log.debug("Сгенерирован id: {}", genId);
 
-        ShortUrl shortUrl = createShortCodeAndUrl(genId, longUrl, ttl);
+        ShortUrl shortUrl = createShortCodeAndUrl(genId, longUrl, expiration);
 
         if (urlRepository.existsByShortCode(shortUrl.getShortCode())) {
             log.error("Обнаружена коллизия шорткода");
@@ -52,27 +73,27 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
 
         // Сохранение в pg и Redis
         log.debug("Сохранение в базу данных");
-        urlRepository.save(shortUrl);
+        ShortUrl saved = urlRepository.save(shortUrl);
 
-        // Сохранение в Redis в формате: url:SHORTCODE -> {longUrl, expiredAt, createdAt}
-        ShortUrlRedisSerializable serializable = new ShortUrlRedisSerializable(
-                longUrl,
-                shortUrl.getCreatedAt(),
-                shortUrl.getExpiresAt()
-        );
-        cachePort.save(shortUrl.getShortCode(), serializable);
+        eventPublisher.publishEvent(new ShortUrlCreatedEvent(saved));
 
-        log.info("короткая ссылка успешно сохранена");
+        log.info("короткая ссылка успешно сохранена в бд");
 
-        return shortUrl;
+        // Сохранение в кеш реализовано в ShortUrlCacheListener, сработает после commit транзакции.
+
+        return saved;
     }
 
 
-    // ВСПОМОГАТЕЛЬНЫЕ МЕТОДЫ
-
-
-    // Создание объекта короткой ссылки
-    private ShortUrl createShortCodeAndUrl(Long id, String longUrl, Long ttl) {
+    /**
+     * Кодирует id в Base62 и собирает доменную модель короткой ссылки.
+     *
+     * @param id идентификатор ссылки
+     * @param longUrl исходный URL
+     * @param expiration момент окончания действия ссылки
+     * @return новая короткая ссылка
+     */
+    private ShortUrl createShortCodeAndUrl(Long id, String longUrl, Instant expiration) {
         log.debug("Создание шорткода...");
         // Создание shortCode(Часть shortUrl) с помощью Base62(id -> цифроБуквенный код)
         ShortCode shortCode = ShortCode.of(Base62Encoder.encode(id));
@@ -83,11 +104,15 @@ public class ShortenUrlService implements CreateShortUrlUseCase {
                 id,
                 shortCode,
                 LongUrl.of(longUrl),
-                ttl
+                expiration
         );
     }
 
-    // Валидация URL на корректность и допустимую длину
+    /**
+     * Проверяет, что URL заполнен и не превышает допустимую длину.
+     *
+     * @param url URL для проверки
+     */
     private void validateLongUrl(String url) {
         if (url == null || url.trim().isEmpty()) {
             log.error("Пустой URL передан");
