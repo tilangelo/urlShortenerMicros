@@ -1,6 +1,6 @@
 # URL Shortener Microservices
 
-Учебный URL shortener на Java 25 и Spring Boot. Проект разделён на три приложения и использует PostgreSQL как источник истины, а Redis — как быстрое хранилище данных для redirect-path.
+Pet project URL shortener на Java 25 и Spring Boot. Проект разделён на три приложения и использует PostgreSQL как источник истины, а Redis — как быстрое хранилище данных для redirect-path.
 
 ## Архитектура
 
