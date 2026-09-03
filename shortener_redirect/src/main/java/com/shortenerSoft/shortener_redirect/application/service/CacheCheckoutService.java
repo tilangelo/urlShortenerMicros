@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import reactor.core.publisher.Mono;
+import tools.jackson.core.JacksonException;
 import tools.jackson.databind.json.JsonMapper;
 
 import java.time.Instant;
@@ -45,7 +46,7 @@ public class CacheCheckoutService implements CacheCheckoutUseCase {
                                 mapper.readValue(json, ShortUrlRedisSerializable.class);
 
                         if(Instant.now().isAfter(ser.getExpireAt())) {
-                            log.warn("Ссылка к которой обращаются устарела");
+
                             return Mono.error(new LinkExpiredException("Ссылка устарела"));
                         }
 
@@ -55,11 +56,16 @@ public class CacheCheckoutService implements CacheCheckoutUseCase {
                         return Mono.error(e);
                     }
                 })
-                // возвращает 500 если ниже вернули ошибку
+
                 .onErrorResume(ex -> {
-                    log.error("Ошибка при получении элемента из redis: {}", ex.getMessage());
+
+                    if(ex instanceof JacksonException) {
+                        log.error("Ошибка при десереализации, shortCode: {}", shortCode);
+                        return Mono.error(ex);
+                    }
+                    log.error("При поиске ссылки возникла ошибка: {}", ex.getMessage());
                     return Mono.error(ex);
-        });
+                });
 
     }
 

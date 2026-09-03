@@ -2,11 +2,12 @@ package com.example.shortener_core.application.port.out;
 
 import com.example.shortener_core.domain.model.LinkPolicyRedis;
 
+import java.time.Duration;
 import java.util.Optional;
 
 public interface LinkPolicyCachePort {
     
-    void savePolicy(String shortcode, LinkPolicyRedis policy);
+    void savePolicy(String shortcode, LinkPolicyRedis policy, Duration duration);
     
     Optional<LinkPolicyRedis> getPolicy(String shortcode);
     

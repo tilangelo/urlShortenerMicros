@@ -18,7 +18,7 @@ public class WebClientConfig {
     @Deprecated
     public WebClient coreWebClient() {
         return WebClient.builder()
-                .baseUrl("http://localhost:8080") // замените на URL вашего core микросервиса
+                .baseUrl("http://localhost:8080")
                 .clientConnector(new ReactorClientHttpConnector(
                         HttpClient.create()
                                 .responseTimeout(Duration.ofSeconds(5))

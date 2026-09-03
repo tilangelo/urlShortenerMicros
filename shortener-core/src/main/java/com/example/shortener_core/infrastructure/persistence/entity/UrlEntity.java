@@ -7,10 +7,7 @@ import lombok.Setter;
 import java.time.Instant;
 
 @Entity
-@Table(name = "urls", indexes = {
-        @Index(name = "idx_short_code", columnList = "short_code", unique = true),
-        @Index(name = "idx_expires_at", columnList = "expires_at")
-})
+@Table(name = "urls")
 @Getter
 @Setter
 public class UrlEntity {

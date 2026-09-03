@@ -1,6 +1,9 @@
 package com.example.api_gateway.filter;
 
 import com.example.api_gateway.model.LinkPolicy;
+import com.example.api_gateway.model.exception.CacheServiceException;
+import com.example.api_gateway.model.exception.CoreServiceException;
+import com.example.api_gateway.model.exception.UnsupportedAuthenticationTypeException;
 import com.example.api_gateway.service.AuthValidationService;
 import com.example.api_gateway.service.LinkPolicyService;
 import io.github.resilience4j.circuitbreaker.CircuitBreaker;
@@ -55,9 +58,7 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
         String path = request.getPath().value();
         
         // Пропускаем API запросы
-        if (path.startsWith("/core-api/") || path.startsWith("/redirect-api/") || 
-            path.startsWith("/internal/") || path.equals("/core-api") || 
-            path.equals("/redirect-api") || path.equals("/internal")) {
+        if (path.startsWith("/core-api/") || path.equals("/core-api")){
             return chain.filter(exchange);
         }
         
@@ -77,7 +78,8 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
                         accessDeniedTotal.increment();
                         Duration latency = Duration.between(startTime, Instant.now());
                         requestLatency.record(latency);
-                        return sendErrorResponse(exchange.getResponse(), HttpStatus.NOT_FOUND, "Short link not found");
+                        return sendErrorResponse(exchange.getResponse(), HttpStatus.NOT_FOUND,
+                                "Short link expired or not found in redis");
                     }
                     
                     // Ссылка существует, продолжаем с поиска политики для неё
@@ -119,6 +121,19 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
                         accessDeniedTotal.increment();
                         log.warn("Request timeout for shortcode: {}", shortcode);
                         return sendErrorResponse(exchange.getResponse(), HttpStatus.GATEWAY_TIMEOUT, "Request timeout");
+
+                    } else if (error instanceof CoreServiceException) {
+                        accessDeniedTotal.increment();
+                        log.error("Core service is unavailable for shortcode: {}", shortcode);
+                        return sendErrorResponse(exchange.getResponse(), HttpStatus.SERVICE_UNAVAILABLE, "Core service is unavailable");
+
+                    } else if (error instanceof CacheServiceException) {
+                        log.error("Redis is unavailable for shortcode: {}", shortcode);
+                        return sendErrorResponse(
+                                exchange.getResponse(),
+                                HttpStatus.SERVICE_UNAVAILABLE,
+                                "Service temporarily unavailable"
+                        );
                     }
 
                     return Mono.error(error);
@@ -166,6 +181,15 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
                                 redirectSuccessTotal.increment();
                                 log.debug("Redirect completed in {} ms", latency.toMillis());
                             });
+                })
+                .onErrorResume(error -> {
+                    if (error instanceof UnsupportedAuthenticationTypeException) {
+                        accessDeniedTotal.increment();
+                        log.error("authentication is not supported");
+                        return sendErrorResponse(exchange.getResponse(), HttpStatus.SERVICE_UNAVAILABLE, "authentication is not supported");
+
+                    }
+                    return Mono.error(error);
                 });
     }
     
@@ -181,7 +205,7 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
     }
     
     private String getClientIp(ServerHttpRequest request) {
-        // Пытаемся получить реальный ip из заголовков
+        /*// Пытаемся получить реальный ip из заголовков
         String xForwardedFor = request.getHeaders().getFirst("X-Forwarded-For");
         if (xForwardedFor != null && !xForwardedFor.isEmpty()) {
             String ip = xForwardedFor.split(",")[0].trim();
@@ -191,9 +215,9 @@ public class LinkPolicyFilter implements GlobalFilter, Ordered {
         String xRealIp = request.getHeaders().getFirst("X-Real-IP");
         if (xRealIp != null && !xRealIp.isEmpty()) {
             return normalizeLocalhost(xRealIp);
-        }
+        }*/
         
-        // Резервный вариант: удалённый адрес
+        // удалённый адрес
         if (request.getRemoteAddress() != null) {
             String ip = request.getRemoteAddress().getAddress().getHostAddress();
             return normalizeLocalhost(ip);

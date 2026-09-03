@@ -37,11 +37,24 @@ public class LinkPolicy {
     public static LinkPolicy create(Long id, Long linkId, ShortCode shortcode,
                                   List<String> allowedIps, Instant allowedTimeStart,
                                   Instant allowedTimeEnd, AuthType authType) {
+        validateTimeWindow(allowedTimeStart, allowedTimeEnd);
         Instant now = Instant.now();
         return new LinkPolicy(
             id, linkId, shortcode, allowedIps, allowedTimeStart,
             allowedTimeEnd, authType, now, now
         );
+    }
+
+    public static void validateTimeWindow(Instant allowedTimeStart, Instant allowedTimeEnd) {
+        if (allowedTimeEnd == null) {
+            throw new IllegalArgumentException("allowedTimeEnd cannot be null");
+        }
+
+        if (allowedTimeStart != null && allowedTimeStart.isAfter(allowedTimeEnd)) {
+            throw new IllegalArgumentException(
+                    "allowedTimeStart must be before or equal to allowedTimeEnd"
+            );
+        }
     }
     
     public String getShortcodeValue() {
@@ -59,6 +72,7 @@ public class LinkPolicy {
         return afterStart && beforeEnd;
     }
     
+    @Getter
     public enum AuthType {
         NONE(null),
         CORPORATE_SSO("corporate_sso"),
@@ -70,11 +84,7 @@ public class LinkPolicy {
         AuthType(String value) {
             this.value = value;
         }
-        
-        public String getValue() {
-            return value;
-        }
-        
+
         public static AuthType fromValue(String value) {
             if (value == null) return NONE;
             for (AuthType type : values()) {

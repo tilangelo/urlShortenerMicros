@@ -2,8 +2,12 @@ package com.example.shortener_core.application.port.out;
 
 import com.example.shortener_core.domain.model.ShortUrlRedisSerializable;
 
+import java.time.Duration;
+
 public interface CachePort {
-    boolean save(String shortCode, ShortUrlRedisSerializable shortUrlRedisSerializable);
+    boolean save(String shortCode,
+                 ShortUrlRedisSerializable shortUrlRedisSerializable,
+                 Duration duration);
 
     ShortUrlRedisSerializable get(String shortCode);
 

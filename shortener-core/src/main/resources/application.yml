@@ -5,9 +5,9 @@ spring:
   application:
     name: url-shortener
   datasource:
-    url: jdbc:postgresql://localhost:15432/shortener
-    username: angelo
-    password: shortener-password-testing
+    url: jdbc:postgresql://localhost:5432/shortener
+    username: postgres
+    password: 893176
     hikari:
       maximum-pool-size: 20
       minimum-idle: 5
@@ -17,7 +17,7 @@ spring:
     baseline-on-migrate: true
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: validate
       dialect: org.hibernate.dialect.PostgreSQLDialect
     open-in-view: false
     properties:

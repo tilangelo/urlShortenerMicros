@@ -1,8 +1,8 @@
 package com.example.api_gateway.service;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
@@ -10,22 +10,27 @@ import reactor.core.publisher.Mono;
 import java.time.Duration;
 
 @Service
-@RequiredArgsConstructor
 @Slf4j
 public class AuthEndpointExchange {
 
-    private final WebClient.Builder webClientBuilder;
+    private final WebClient authWebClient;
+    private final String ssoEndpoint;
+    private final String apiKeyEndpoint;
 
-    @Value("${gateway.auth.sso-endpoint}")
-    private String ssoEndpoint;
-
-    @Value("${gateway.auth.api-key-endpoint}")
-    private String apiKeyEndpoint;
+    public AuthEndpointExchange(
+            @Qualifier("authWebClient") WebClient authWebClient,
+            @Value("${gateway.auth.sso-endpoint}") String ssoEndpoint,
+            @Value("${gateway.auth.api-key-endpoint}") String apiKeyEndpoint
+    ) {
+        this.authWebClient = authWebClient;
+        this.ssoEndpoint = ssoEndpoint;
+        this.apiKeyEndpoint = apiKeyEndpoint;
+    }
 
 
     public Mono<Boolean> corpSsoExchange(String token, String clientIp, Duration SSO_TIMEOUT){
 
-        return webClientBuilder.build()
+        return authWebClient
                 .post()
                 .uri(ssoEndpoint)
                 .header("Authorization", "Bearer " + token)
@@ -43,7 +48,7 @@ public class AuthEndpointExchange {
 
                 // логи
                 .doOnSuccess(valid ->
-                        log.debug("SSO validation result: {}", valid)
+                        log.info("SSO validation result: {}", valid)
                 )
                 .doOnError(error -> {
                     if (error instanceof java.util.concurrent.TimeoutException) {
@@ -60,7 +65,7 @@ public class AuthEndpointExchange {
 
     public Mono<Boolean> apiKeyExchange(String apiKey, String clientIp, Duration API_KEY_TIMEOUT){
 
-        return webClientBuilder.build()
+        return authWebClient
                 .post()
                 .uri(apiKeyEndpoint)
                 .header("Authorization", "Bearer " + apiKey)

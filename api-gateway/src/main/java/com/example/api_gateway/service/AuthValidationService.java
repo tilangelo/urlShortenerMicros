@@ -1,5 +1,6 @@
 package com.example.api_gateway.service;
 
+import com.example.api_gateway.model.exception.UnsupportedAuthenticationTypeException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.server.reactive.ServerHttpRequest;
@@ -22,7 +23,7 @@ public class AuthValidationService {
                                       ServerHttpRequest request,
                                       String clientIp) {
 
-        if (authType == null || authType.equals("null") || authType.isEmpty()) {
+        if (authType == null ) {
             return Mono.just(true); // Аутентификация не требуется
         }
 
@@ -34,12 +35,22 @@ public class AuthValidationService {
             case "api_key":
                 return validateApiKey(authHeader, clientIp);
             case "basic":
-                return validateBasic(authHeader);
+                log.warn("Basic auth not supported");
+                return Mono.error(
+                        new UnsupportedAuthenticationTypeException(
+                                "Basic authentication is not supported"
+                        )
+                );
             default:
-                log.warn("Unknown auth type: {}", authType);
-                return Mono.just(false);
+                log.warn("Unsupported authentication type: {}", authType);
+                return Mono.error(
+                        new UnsupportedAuthenticationTypeException(
+                                "Unsupported authentication type: " + authType
+                        )
+                );
         }
     }
+
 
     // Валидация токена sso через внешний эндпоинт
     private Mono<Boolean> validateCorporateSso(String authHeader, String clientIp) {
@@ -53,6 +64,7 @@ public class AuthValidationService {
         //TODO: СЕЙЧАС ПРИ FALSE ТОЛЬКО ЛОГ, ДАЛЬШЕ МОЖНО ИНТЕГРИРОВАТЬ С СЕРВИСОМ И ПРИ FALSE РЕДИРЕКТ НА АВТОРИЗАЦИЮ
         return authEndpointExchange.corpSsoExchange(token, clientIp, SSO_TIMEOUT);
     }
+
 
     // Валидация API ключа через внешний сервис
     private Mono<Boolean> validateApiKey(String authHeader, String clientIp) {
@@ -68,21 +80,18 @@ public class AuthValidationService {
     }
 
 
-    // Валидация без ключей и авторизации, то есть если политика ограничила только ip и/или время
-    private Mono<Boolean> validateBasic(String authHeader) {
-        return Mono.just(authHeader != null && authHeader.startsWith("Basic "));
-    }
-
     private String extractBearerToken(String authHeader) {
-        if (authHeader == null) {
+        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
             return null;
         }
 
-        if (authHeader.startsWith("Bearer ")) {
-            return authHeader.substring(7).trim();
+        String token = authHeader.substring("Bearer ".length()).trim();
+
+        if (token.isEmpty()) {
+            return null;
         }
 
-        return null;
+        return token;
     }
 
 }

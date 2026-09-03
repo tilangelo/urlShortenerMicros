@@ -14,11 +14,7 @@ import java.time.Instant;
 import java.util.List;
 
 @Entity
-@Table(name = "link_policies", indexes = {
-    @Index(name = "idx_link_policies_shortcode", columnList = "shortcode", unique = true),
-    @Index(name = "idx_link_policies_link_id", columnList = "link_id"),
-    @Index(name = "idx_link_policies_time_window", columnList = "allowed_time_start, allowed_time_end")
-})
+@Table(name = "link_policies")
 @Getter
 @Setter
 public class LinkPolicyEntity {
@@ -38,9 +34,9 @@ public class LinkPolicyEntity {
     private String shortcode;
     
     @Column(name = "allowed_ips")
-@JdbcTypeCode(SqlTypes.JSON)
-@Convert(converter = ListToJsonConverter.class)
-private List<String> allowedIps;
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Convert(converter = ListToJsonConverter.class)
+    private List<String> allowedIps;
     
     @Column(name = "allowed_time_start")
     private Instant allowedTimeStart;

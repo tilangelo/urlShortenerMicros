@@ -10,8 +10,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 
+import java.time.Duration;
 import java.util.Optional;
-import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
@@ -29,16 +29,15 @@ public class LinkPolicyRedisAdapter implements LinkPolicyCachePort {
     }
     
     private static final String POLICY_KEY_PREFIX = "link:policy:";
-    private static final long DEFAULT_TTL_HOURS = 24;
     
     @Override
-    public void savePolicy(String shortcode, LinkPolicyRedis policy) {
+    public void savePolicy(String shortcode, LinkPolicyRedis policy, Duration duration) {
         try {
             String key = buildKey(shortcode);
             String json = jsonMapper.writeValueAsString(policy);
             
             log.debug("Сохранение политики в Redis для shortcode {}: {}", shortcode, json);
-            redisTemplate.opsForValue().set(key, json, DEFAULT_TTL_HOURS, TimeUnit.HOURS);
+            redisTemplate.opsForValue().set(key, json, duration);
             log.debug("Политика успешно сохранена в Redis для shortcode: {}", shortcode);
         } catch (JsonProcessingException e) {
             log.error("Failed to serialize link policy for shortcode: {}", shortcode, e);

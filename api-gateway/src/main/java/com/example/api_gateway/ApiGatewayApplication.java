@@ -1,12 +1,7 @@
 package com.example.api_gateway;
 
-import com.example.api_gateway.filter.LinkPolicyFilter;
-import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.cloud.gateway.route.RouteLocator;
-import org.springframework.cloud.gateway.route.builder.RouteLocatorBuilder;
-import org.springframework.context.annotation.Bean;
 
 @SpringBootApplication
 public class ApiGatewayApplication {

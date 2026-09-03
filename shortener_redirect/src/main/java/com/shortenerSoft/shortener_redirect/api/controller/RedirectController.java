@@ -60,6 +60,7 @@ public class RedirectController {
                             return Mono.just(ResponseEntity
                                     .status(HttpStatus.NOT_FOUND)
                                     .build());
+                        // Если возникла ошибка при десереализации или пр.
                         }else {
                             return Mono.just(ResponseEntity
                                     .status(HttpStatus.INTERNAL_SERVER_ERROR)

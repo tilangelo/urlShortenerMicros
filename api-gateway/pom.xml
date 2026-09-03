@@ -5,7 +5,7 @@
     <parent>
         <groupId>org.springframework.boot</groupId>
         <artifactId>spring-boot-starter-parent</artifactId>
-        <version>3.2.0</version>
+        <version>4.0.6</version>
         <relativePath/>
     </parent>
     <groupId>com.example</groupId>
@@ -15,15 +15,16 @@
     <description>API Gateway for URL Shortener</description>
     
     <properties>
-        <java.version>21</java.version>
-        <spring-cloud.version>2023.0.1</spring-cloud.version>
+        <java.version>25</java.version>
+        <lombok.version>1.18.46</lombok.version>
+        <spring-cloud.version>2025.1.0</spring-cloud.version>
     </properties>
     
     <dependencies>
         <!-- Spring Cloud Gateway -->
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-gateway</artifactId>
+            <artifactId>spring-cloud-starter-gateway-server-webflux</artifactId>
         </dependency>
         
         <!-- Redis -->
@@ -42,6 +43,10 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-actuator</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-health</artifactId>
         </dependency>
         
         <!-- WebFlux -->
@@ -94,7 +99,7 @@
         <!-- Circuit Breaker -->
         <dependency>
             <groupId>io.github.resilience4j</groupId>
-            <artifactId>resilience4j-spring-boot3</artifactId>
+            <artifactId>resilience4j-circuitbreaker</artifactId>
         </dependency>
         <dependency>
             <groupId>io.github.resilience4j</groupId>
@@ -135,6 +140,19 @@
     
     <build>
         <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <annotationProcessorPaths>
+                        <path>
+                            <groupId>org.projectlombok</groupId>
+                            <artifactId>lombok</artifactId>
+                            <version>${lombok.version}</version>
+                        </path>
+                    </annotationProcessorPaths>
+                </configuration>
+            </plugin>
             <plugin>
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>

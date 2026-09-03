@@ -7,46 +7,39 @@ spring:
   
   cloud:
     gateway:
-      httpclient:
-        connect-timeout: 5000
-        response-timeout: 10s
-        pool:
-          type: ELASTIC
-          max-connections: 500
-          acquire-timeout: 5000        # 5 сек на получение соединения
-          max-idle-time: 30s          # Закрывать неактивные соединения
-          max-life-time: 60s           # Максимальное время жизни соединения
-      
-      routes:
-        - id: direct_redirect_route
-          uri: http://localhost:8081
-          predicates:
-            - Path=/{shortcode}
-          filters:
-            - SetPath=/redirect-api/{shortcode}
-            - name: Retry
-              args:
-                retries: 2
-                statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
-                methods: GET,POST
-                backoff:
-                  firstBackoff: 100ms
-                  maxBackoff: 500ms
-                  factor: 2
-        - id: redirect_route
-          uri: http://localhost:8081
-          predicates:
-            - Path=/redirect-api/{shortcode}
-        - id: core_api_route
-          uri: http://localhost:8080/
-          predicates:
-            - Path=/core-api/**
-        - id: internal_api_route
-          uri: http://localhost:8080
-          predicates:
-            - Path=/internal/**
-          filters:
-            - StripPrefix=1
+      server:
+        webflux:
+          httpclient:
+            connect-timeout: 5000
+            response-timeout: 10s
+            pool:
+              type: ELASTIC
+              max-connections: 500
+              acquire-timeout: 5000        # 5 сек на получение соединения
+              max-idle-time: 30s          # Закрывать неактивные соединения
+              max-life-time: 60s           # Максимальное время жизни соединения
+
+          routes:
+            - id: direct_redirect_route
+              uri: ${gateway.redirect-service.base-url}
+              predicates:
+                - Path=/{shortcode}
+                - Method=GET
+              filters:
+                - SetPath=/redirect-api/{shortcode}
+                - name: Retry
+                  args:
+                    retries: 2
+                    statuses: BAD_GATEWAY,SERVICE_UNAVAILABLE,GATEWAY_TIMEOUT
+                    methods: GET
+                    backoff:
+                      firstBackoff: 100ms
+                      maxBackoff: 500ms
+                      factor: 2
+            - id: core_api_route
+              uri: ${gateway.core-service.base-url}
+              predicates:
+                - Path=/core-api/**
 
   data:
     redis:
@@ -94,6 +87,8 @@ logging:
 gateway:
   core-service:
     base-url: http://localhost:8080
+    username: ${APP_SECURITY_GATEWAY_USERNAME}
+    password: ${APP_SECURITY_GATEWAY_PASSWORD}
   redirect-service:
     base-url: http://localhost:8081
   cache:

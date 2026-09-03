@@ -34,13 +34,13 @@ public class ShortUrl implements Serializable {
 
     // Factory method для создания новой short URL
     public static ShortUrl create(Long id, ShortCode shortCode,
-                                  LongUrl longUrl, Long ttl) {
+                                  LongUrl longUrl, Instant expiresAt) {
         return new ShortUrl(
                 id,
                 shortCode, // Генерируем short code из ID
                 longUrl,
                 Instant.now(),
-                Instant.now().plus(Duration.ofMillis(ttl))
+                expiresAt
         );
     }
 

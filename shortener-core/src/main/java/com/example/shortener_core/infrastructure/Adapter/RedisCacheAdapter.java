@@ -7,6 +7,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
 import tools.jackson.databind.json.JsonMapper;
 
+import java.time.Duration;
+
 @Component
 @Slf4j
 public class RedisCacheAdapter implements CachePort {
@@ -20,7 +22,7 @@ public class RedisCacheAdapter implements CachePort {
 
 
     @Override
-    public boolean save(String shortCode, ShortUrlRedisSerializable serializable) {
+    public boolean save(String shortCode, ShortUrlRedisSerializable serializable, Duration duration) {
 
         log.info("Сохранение hash в redis...");
 
@@ -28,7 +30,8 @@ public class RedisCacheAdapter implements CachePort {
 
         return redisTemplate.opsForValue().setIfAbsent(
                 buildKey(shortCode),
-                json
+                json,
+                duration
         );
     }
 
